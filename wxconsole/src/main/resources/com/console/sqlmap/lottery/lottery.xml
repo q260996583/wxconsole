@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TBL_LOTTERY_RESULT">
+	<!-- 角色 -->
+	<typeAlias alias="lotteryInfoVo"
+		type="com.jiuyv.yl.console.lottery.entity.LotteryInfoVo" />
+
+	<!-- select -->
+	<sql id="selectPart">
+		SELECT
+			t0.LOTTERY_ID as lotteryId,
+			t0.LOTTERY_RESULT as lotteryResult,
+			t0.RUN_TIME as runTime,
+			t0.LOTTERY_TYPE as lotteryType,
+			t0.STATUS as status,
+			t0.START_TIME as startTime,
+			t0.FINISH_TIME as finishTime,
+			t0.SYSTEM_TIME as systemTime,
+			t0.total_single_double  as totalSingleDouble,
+			t0.total_big_small      as totalBigSmall,
+			t0.total_tail_big_small as totalTailBigSmall,
+			t0.dragon_tigger        as dragonTigger,
+			t0.leopard              as leopard,
+			t0.field1               as field1,
+			t0.field2               as field2,
+			t0.field3               as field3,
+			t0.field4               as field4,
+			t0.field5               as field5,
+			t0.notify_status        as notifyStatus
+		FROM tbl_lottery_result t0
+	</sql>
+	<select id="__select" parameterClass="iCriteria" resultClass="lotteryInfoVo">
+ 	 	<include refid="selectPart"/>
+ 	 	where 1=1
+ 	</select>
+ 	
+ 	<select id="limitQueryLotteryInfo" parameterClass="lotteryInfoVo" resultClass="lotteryInfoVo">
+ 	 	<include refid="selectPart"/>
+ 	 	where t0.LOTTERY_ID <![CDATA[ <= ]]> #lotteryId# 
+ 	 		and t0.LOTTERY_TYPE=#lotteryType# 
+ 	 		order by lottery_id desc
+ 	 	LIMIT 16
+ 	</select>
+ 	
+ 	<select id="__selectByPk" resultClass="lotteryInfoVo">
+ 	 	<include refid="selectPart"/>
+ 	 	where t0.LOTTERY_ID=#lotteryId#
+ 	</select>
+
+	<!-- 添加彩票结果 -->
+	<insert id="__insert" parameterClass="lotteryInfoVo">
+		insert into tbl_lottery_result (LOTTERY_ID
+		<dynamic>
+			<isNotNull property="lotteryResult" prepend=",">LOTTERY_RESULT</isNotNull>
+			<isNotNull property="runTime" prepend=",">RUN_TIME</isNotNull>
+			<isNotNull property="lotteryType" prepend=",">LOTTERY_TYPE</isNotNull>
+			<isNotNull property="status" prepend=",">STATUS</isNotNull>
+			<isNotNull property="startTime" prepend=",">START_TIME</isNotNull>
+			<isNotNull property="finishTime" prepend=",">FINISH_TIME</isNotNull>
+			<isNotNull property="systemTime" prepend=",">SYSTEM_TIME</isNotNull>
+			<isNotNull property="totalSingleDouble" prepend=",">TOTAL_SINGLE_DOUBLE</isNotNull>
+			<isNotNull property="totalBigSmall" prepend=",">TOTAL_BIG_SMALL</isNotNull>
+			<isNotNull property="totalTailBigSmall" prepend=",">TOTAL_TAIL_BIG_SMALL</isNotNull>
+			<isNotNull property="dragonTigger" prepend=",">DRAGON_TIGGER</isNotNull>
+			<isNotNull property="leopard" prepend=",">LEOPARD</isNotNull>
+			<isNotNull property="field1" prepend=",">FIELD1</isNotNull>
+			<isNotNull property="field2" prepend=",">FIELD2</isNotNull>
+			<isNotNull property="field3" prepend=",">FIELD3</isNotNull>
+			<isNotNull property="field4" prepend=",">FIELD4</isNotNull>
+			<isNotNull property="field5" prepend=",">FIELD5</isNotNull>
+			<isNotNull property="notifyStatus" prepend=",">notify_Status</isNotNull>
+	 	</dynamic>
+		)values(#lotteryId#
+		<dynamic>
+			<isNotNull property="lotteryResult" prepend=",">#lotteryResult#</isNotNull>
+			<isNotNull property="runTime" prepend=",">#runTime#</isNotNull>
+			<isNotNull property="lotteryType" prepend=",">#lotteryType#</isNotNull>
+			<isNotNull property="status" prepend=",">#status#</isNotNull>
+			<isNotNull property="startTime" prepend=",">#startTime#</isNotNull>
+			<isNotNull property="finishTime" prepend=",">#finishTime#</isNotNull>
+			<isNotNull property="systemTime" prepend=",">#systemTime#</isNotNull>
+			<isNotNull property="totalSingleDouble" prepend=",">#totalSingleDouble#</isNotNull>
+			<isNotNull property="totalBigSmall" prepend=",">#totalBigSmall#</isNotNull>
+			<isNotNull property="totalTailBigSmall" prepend=",">#totalTailBigSmall#</isNotNull>
+			<isNotNull property="dragonTigger" prepend=",">#dragonTigger#</isNotNull>
+			<isNotNull property="leopard" prepend=",">#leopard#</isNotNull>
+			<isNotNull property="field1" prepend=",">#field1#</isNotNull>
+			<isNotNull property="field2" prepend=",">#field2#</isNotNull>
+			<isNotNull property="field3" prepend=",">#field3#</isNotNull>
+			<isNotNull property="field4" prepend=",">#field4#</isNotNull>
+			<isNotNull property="field5" prepend=",">#field5#</isNotNull>
+			<isNotNull property="notifyStatus" prepend=",">#notifyStatus#</isNotNull>
+	 	</dynamic>		
+		)
+	</insert>
+
+	<!-- 修改彩票结果-->
+	<update id="__update" parameterClass="lotteryInfoVo">
+		update tbl_lottery_result set 
+		status=#status#
+		<dynamic>
+			<isNotNull property="lotteryResult" prepend=",">LOTTERY_RESULT = #lotteryResult# </isNotNull>
+			<isNotNull property="runTime" prepend=",">RUN_TIME = #runTime# </isNotNull>
+			<isNotNull property="lotteryType" prepend=",">LOTTERY_TYPE = #lotteryType# </isNotNull>
+			<isNotNull property="startTime" prepend=",">START_TIME = #startTime# </isNotNull>
+			<isNotNull property="finishTime" prepend=",">FINISH_TIME = #finishTime# </isNotNull>
+			<isNotNull property="systemTime" prepend=",">SYSTEM_TIME = #systemTime# </isNotNull>
+			<isNotNull property="totalSingleDouble" prepend=",">TOTAL_SINGLE_DOUBLE = #totalSingleDouble#</isNotNull>
+			<isNotNull property="totalBigSmall" prepend=",">TOTAL_BIG_SMALL = #totalBigSmall#</isNotNull>
+			<isNotNull property="totalTailBigSmall" prepend=",">TOTAL_TAIL_BIG_SMALL = #totalTailBigSmall#</isNotNull>
+			<isNotNull property="dragonTigger" prepend=",">DRAGON_TIGGER = #dragonTigger#</isNotNull>
+			<isNotNull property="leopard" prepend=",">LEOPARD = #leopard#</isNotNull>
+			<isNotNull property="field1" prepend=",">FIELD1 = #field1#</isNotNull>
+			<isNotNull property="field2" prepend=",">FIELD2 = #field2#</isNotNull>
+			<isNotNull property="field3" prepend=",">FIELD3 = #field3#</isNotNull>
+			<isNotNull property="field4" prepend=",">FIELD4 = #field4#</isNotNull>
+			<isNotNull property="field5" prepend=",">FIELD5 = #field5#</isNotNull>
+			<isNotNull property="notifyStatus" prepend=",">notify_Status = #notifyStatus#</isNotNull>
+	 	</dynamic>
+		 where LOTTERY_ID=#lotteryId#
+	</update>
+	
+	<select id="__selectValidOrder" resultClass="lotteryInfoVo">
+ 	 	<include refid="selectPart"/>
+ 	 	where NOW() BETWEEN START_TIME AND FINISH_TIME
+ 	 	and t0.Lottery_type=#lotteryType# AND t0.status='00'
+ 	</select>
+ 	
+ 	<select id="selectLotteryOrder" parameterClass="java.util.Map" resultClass="com.jiuyv.yl.console.lottery.entity.TblLotteryOrder">
+ 	 	<![CDATA[
+		select 
+			 c.lotteryId as lotteryId
+			,c.merid as merid
+			,c.status as status
+			,c.systemTime as systemTime
+			,SUBSTRING(c.lotteryCode,1,CHAR_LENGTH(c.lotteryCode)-2) as lotteryCode
+			,c.winAmt as winAmt
+			,c.transAmt as transAmt
+			,c.lotteryType as lotteryType
+			,c.ID as id
+			,c.NICKNAME as nickname
+		  ,c.statusDesc as statusDesc
+			,c.lotteryResult as lotteryResult
+			from(select 
+			 d.lottery_id as lotteryId
+			,d.merid as merid
+			,d.status as status
+			,d.system_time as systemTime
+			,IF(CHAR_LENGTH(d.totalCode)>1,d.totalCode,d.singleCode) as lotteryCode
+			,d.win_amt as winAmt
+			,d.trans_amt as transAmt
+			,d.LOTTERY_TYPE as lotteryType
+			,d.ID as id
+			,m.NICKNAME as nickname
+		  ,s.CODE_NAME as statusDesc
+			,r.LOTTERY_RESULT as lotteryResult
+			from(
+			select 
+			t.lottery_id as LOTTERY_ID,
+			t.merid as MERID,
+			t.status as status,
+			t.system_time as SYSTEM_TIME,
+			IFNULL(t.total_single_double
+				,IFNULL(t.total_big_small
+					,IFNULL(t.total_tail_big_small
+						,IFNULL(T.dragon_tigger, IFNULL(t.leopard,'0'))
+			))) as totalCode,
+			IFNULL(
+			IF(SPLIT_STR(t.field1, ',', 1)<>'',CONCAT('一', SPLIT_STR(t.field1, ',', 1)),
+					IF(SPLIT_STR(t.field1, ',', 2)<>'', CONCAT('一', SPLIT_STR(t.field1, ',', 2)), 
+						IF(SPLIT_STR(t.field1, ',', 3)<>'', CONCAT('一', SPLIT_STR(t.field1, ',', 3)), CONCAT('一', SPLIT_STR(t.field1, ',', 4))))),
+			IFNULL(
+			IF(SPLIT_STR(t.field2, ',', 1)<>'',CONCAT('二', SPLIT_STR(t.field2, ',', 1)),
+					IF(SPLIT_STR(t.field2, ',', 2)<>'', CONCAT('二', SPLIT_STR(t.field2, ',', 2)), 
+						IF(SPLIT_STR(t.field2, ',', 3)<>'', CONCAT('二', SPLIT_STR(t.field2, ',', 3)), CONCAT('二', SPLIT_STR(t.field2, ',', 4))))),
+			IFNULL(
+			IF(SPLIT_STR(t.field3, ',', 1)<>'',CONCAT('三', SPLIT_STR(t.field3, ',', 1)),
+					IF(SPLIT_STR(t.field3, ',', 2)<>'', CONCAT('三', SPLIT_STR(t.field3, ',', 2)), 
+						IF(SPLIT_STR(t.field3, ',', 3)<>'', CONCAT('三', SPLIT_STR(t.field3, ',', 3)), CONCAT('三', SPLIT_STR(t.field3, ',', 4))))),
+			IFNULL(
+			IF(SPLIT_STR(t.field4, ',', 1)<>'',CONCAT('四', SPLIT_STR(t.field4, ',', 1)),
+					IF(SPLIT_STR(t.field4, ',', 2)<>'', CONCAT('四', SPLIT_STR(t.field4, ',', 2)), 
+						IF(SPLIT_STR(t.field4, ',', 3)<>'', CONCAT('四', SPLIT_STR(t.field4, ',', 3)), CONCAT('四', SPLIT_STR(t.field4, ',', 4))))),
+			IF(SPLIT_STR(t.field5, ',', 1)<>'',CONCAT('五', SPLIT_STR(t.field5, ',', 1)),
+					IF(SPLIT_STR(t.field5, ',', 2)<>'', CONCAT('五', SPLIT_STR(t.field5, ',', 2)), 
+						IF(SPLIT_STR(t.field5, ',', 3)<>'', CONCAT('五', SPLIT_STR(t.field5, ',', 3)), CONCAT('五', SPLIT_STR(t.field5, ',', 4)))))
+			)))) as singleCode,
+			t.win_amt,
+			t.trans_amt,
+			t.LOTTERY_TYPE,
+			t.ID
+			from tbl_lottery_order t) d 
+			left join tbl_webchant_merchant m on d.MERID=m.MERID
+			left join tbl_sys_code s on d.`status`=s.CODE_NO and s.CODE_TYPE='LOTTERY_ORDER_STATUS'
+			left join tbl_lottery_result r on d.LOTTERY_ID=r.LOTTERY_ID) c
+ 	 	where 1=1
+ 	 	]]>
+ 	 	<isNotNull property="merid">
+	  		and c.merid = #merid#
+	  	</isNotNull>
+	  	<isNotNull property="nickname">
+	  		and c.nickname like '%$nickname$%'
+	  	</isNotNull>
+	  	<isNotNull property="lotteryType">
+	  		and c.lotteryType = #lotteryType#
+	  	</isNotNull>
+	  	<isNotNull property="lotteryId">
+	  		and c.lotteryId = #lotteryId#
+	  	</isNotNull>
+ 	 	 order by c.ID desc
+		<isNotNull property="start">
+	  		limit #start#,#limit#
+	  	</isNotNull>
+ 	</select>
+</sqlMap>

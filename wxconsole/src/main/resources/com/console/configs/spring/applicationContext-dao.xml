@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<!-- Transaction manager -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<!-- Spring提供的iBatis的SqlMap配置 -->
+	<bean id="sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="configLocation" value="classpath:com/console/sqlmap/sqlMapConfig.xml" />
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<!-- ibatis扩展工具的配置 -->
+	<bean id="extendClient" class="com.jiuyv.common.ibatis.ExtendClient">
+		
+		<property name="client" ref="sqlMapClient" />
+		<property name="selectcountmapmentid" value="template.count_temp" />
+		<property name="selectgroupmapmentid" value="template.pager_temp" />
+	</bean>
+
+	<!-- dao配置 -->
+	<!-- 公共参数 -->
+	<bean id="secDao" class="com.jiuyv.yl.console.common.dao.SecDaoImpl">
+		<property name="extendClient" ref="extendClient"></property>
+	</bean>
+	
+	<bean id="resourceDao" class="com.jiuyv.yl.console.common.dao.ResourceDaoImpl"
+		scope="prototype">
+		<property name="extendClient" ref="extendClient"></property>
+	</bean>
+	<!-- 以上jiuyv框架 -->
+
+	<!-- 日志Dao -->
+	<bean id="logDao" class="com.jiuyv.yl.console.common.dao.OprlogDaoImpl"
+		scope="prototype">
+		<property name="extendClient" ref="extendClient"></property>
+	</bean>
+
+	<!-- 以下业务Dao实例 -->
+	<!-- 控制台操作员管理 -->
+	<bean id="consoleOperDao"
+		class="com.jiuyv.yl.console.consoleoper.dao.impl.ConsoleOperDaoImpl">
+		<property name="extendClient" ref="extendClient"></property>
+	</bean>
+
+	<bean id="roleMngrDao" class="com.jiuyv.yl.console.consoleoper.dao.impl.RoleMngrDaoImpl">
+		<property name="extendClient" ref="extendClient"></property>
+	</bean>
+
+	<!-- basedao -->
+	<bean id="basedao" abstract="true" >
+		<property name="extendClient" ref="extendClient"/>
+	</bean>
+	
+	<!--公共的DAO -->
+	<bean id="commonDao" class="com.jiuyv.yl.console.common.dao.impl.CommonDaoImpl">
+		<property name="extendClient" ref="extendClient"></property>
+	</bean>
+	
+	<!-- 资源Dao -->
+	<bean id="cmMediaResDao" class="com.jiuyv.yl.console.common.dao.impl.CmMediaResDaoImpl" parent="basedao" />
+	
+	<!--彩票 -->
+	<bean id="lotteryResultOperDao" class="com.jiuyv.yl.console.lottery.dao.impl.LotteryResultOperDaoImpl">
+		<property name="extendClient" ref="extendClient"></property>
+	</bean>
+	<bean id="tblLotteryOrderDAO" class="com.jiuyv.yl.console.lottery.dao.impl.TblLotteryOrderDAOImpl">
+		<constructor-arg index="0" ref="sqlMapClient" />
+		<!-- <property name="sqlMapClient" ref="sqlMapClient"></property> -->
+	</bean>
+	
+	<bean id="tblLotteryMerchantDAO" class="com.jiuyv.yl.console.lottery.dao.impl.TblLotteryMerchantDAOImpl">
+		<constructor-arg index="0" ref="sqlMapClient" />
+	</bean>
+	
+	<bean id="tblWebchantMerchantDAO" class="com.jiuyv.yl.console.lottery.dao.impl.TblWebchantMerchantDAOImpl">
+		<constructor-arg index="0" ref="sqlMapClient" />
+	</bean>
+	
+	<bean id="lotteryWelfareDAO" class="com.jiuyv.yl.console.lottery.dao.impl.TblLotteryWelfareDAOImpl">
+		<constructor-arg index="0" ref="sqlMapClient" />
+	</bean>
+</beans>

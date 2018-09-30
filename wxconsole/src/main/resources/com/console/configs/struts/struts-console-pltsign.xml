@@ -1,0 +1,19 @@
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+	<!-- 平台管理 -->
+	<package name="console.pltsign" extends="demo-query-default">
+		<action name="queryPltSign" class="pltSignAction" method="queryPltSign">
+			<result name="success">/page/console/business/pltsign/pltSign.jsp</result>
+		</action>
+		<action name="findPltSign" class="pltSignAction" method="findPltSign"></action>
+		<action name="doSignPlt" class="pltSignAction" method="doSignPlt"></action>
+		<action name="doSignOffPlt" class="pltSignAction" method="doSignOffPlt"></action>
+		<action name="doResetKey" class="pltSignAction" method="doResetKey"></action>
+		<action name="doSysEchoTest" class="pltSignAction" method="doSysEchoTest"></action>
+		<action name="doResetPIK" class="pltSignAction" method="doResetPIK"></action>
+		<action name="doResetMAK" class="pltSignAction" method="doResetMAK"></action>
+	</package>
+
+</struts>

@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="CONSOLEOPER">
+	<!-- 日志 -->
+	<typeAlias alias="operatorLogVo"
+		type="com.jiuyv.yl.console.consoleoper.entity.OperatorLogVo" />
+	<typeAlias alias="oprLogVo"
+		type="com.jiuyv.yl.console.consoleoper.entity.TblConsoleOprLogVo" />
+	<!-- 操作员 -->
+	<typeAlias alias="operatorVo"
+		type="com.jiuyv.yl.console.consoleoper.entity.OperatorVo" />
+	<!-- 权限 -->
+	<typeAlias alias="roleVo"
+		type="com.jiuyv.yl.console.consoleoper.entity.RoleVo" />
+
+	<select id="selectOperatorLog" parameterClass="iCriteria" resultClass="oprLogVo">
+		select TblMplOprLog.STLM_DATE as stlmDate,
+		TblMplOprLog.OPR_NO as oprNo,
+		TblMplOprLog.RESOURCE_ID as resourceId,
+		TblMplOprLog.RESOURCE_ZH as resourceZh,
+		TblMplOprLog.OPR_ORG_CODE as oprOrgCode,
+		TblMplOprLog.OPR_USER_ID as oprUserId,
+		TblMplOprLog.OPR_LOGIN_ID as oprLoginId,
+		TblMplOprLog.OPR_URL as oprUrl,
+		TblMplOprLog.OPR_SYS_CODE as oprSysCode,
+		TblMplOprLog.OPR_TIME as oprTime,
+		TblMplOprLog.OPR_IP as oprIp,
+		TblMplOprLog.OPR_SUCCESS as oprSuccess,
+		TblMplOprLog.OPR_RESULT_INFO as oprResultInfo,
+		TblMplOprLog.OPR_REMARK as oprRemark,
+		b.op_name as oprNm
+		from TBL_CONSOLE_OPR_LOG TblMplOprLog,
+		tbl_console_opinfo b
+		where rownum >0 
+		and b.opr_id = TblMplOprLog.OPR_USER_ID
+	</select>
+	
+	
+	<select id="selectPageOper" parameterClass="iCriteria" resultClass="operatorVo">
+		select opr_id,
+					login_nm,
+					op_name,
+					status,
+					cert_type_no,
+					cert_no,
+					phone,
+					mobile,
+					email,
+					description,
+					create_tm,
+					create_oprid,
+					last_mod_tm,
+					last_mod_oprid,
+					misc,
+					org_code,
+					passwd_expire_time,
+					org_name,
+					reserved1,
+					reserved2,
+                    groupNo,
+                    groupNoDesc
+		from
+		(select uInfo.opr_id,
+					uInfo.login_nm,
+					uInfo.op_name,
+					uInfo.status,
+					uInfo.cert_type_no,
+					uInfo.cert_no,
+					uInfo.phone,
+					uInfo.mobile,
+					uInfo.email,
+					uInfo.description,
+					uInfo.create_tm,
+					uInfo.create_oprid,
+					uInfo.last_mod_tm,
+					uInfo.last_mod_oprid,
+					uInfo.misc,
+					uInfo.org_code,
+					uInfo.passwd_expire_time,
+					o.org_name as org_name,
+					uInfo.RESERVED1 as reserved1,
+					uInfo.RESERVED2 as reserved2,
+					uInfo.GROUP_NO as groupNo,
+                    gc.CODE_NAME as groupNoDesc
+		 from TBL_CONSOLE_OPINFO uInfo 
+		 left join tbl_sys_org o on uInfo.org_code=o.org_code
+		 left join (select *from tbl_sys_code where CODE_TYPE = 'SYS_USER_GROUP') gc on uInfo.GROUP_NO = gc.CODE_NAME
+		where uInfo.STATUS='0' or uInfo.STATUS='1')
+		where 1=1
+	</select>
+
+	<update id="updateOper" parameterClass="operatorVo">
+		update TBL_CONSOLE_OPINFO
+		<dynamic prepend="set">
+			<isNotNull property="org_code" prepend=",">org_code = #org_code#</isNotNull>
+			<isNotNull property="op_name" prepend=",">op_name = #op_name# </isNotNull>
+			<isNotNull property="status" prepend=",">status = #status#</isNotNull>
+			<isNotNull property="cert_type_no" prepend=",">cert_type_no = #cert_type_no#</isNotNull>
+			<isNotNull property="cert_no" prepend=",">cert_no = #cert_no#</isNotNull>
+			<isNotNull property="phone" prepend=",">phone = #phone#</isNotNull>
+			<isNotNull property="email" prepend=",">email = #email#</isNotNull>
+			<isNotNull property="description" prepend=",">description = #description#</isNotNull>
+			<isNotNull property="misc" prepend=",">misc = #misc#</isNotNull>
+			<isNotNull property="last_upd_opid" prepend=",">last_upd_opid = #last_upd_opid#</isNotNull>
+			<isNotNull property="opr_id" prepend=",">LAST_UPD_TM=to_char(sysdate,'yyyyMMddHH24miss')</isNotNull>
+			<isNotNull property="passwd_expire_time" prepend=",">passwd_expire_time=#passwd_expire_time#</isNotNull>
+			<isNotNull property="reserved1" prepend="," > reserved1 = #reserved1# </isNotNull>
+			<isNotNull property="reserved2" prepend="," > reserved2 = #reserved2# </isNotNull>
+			<isNotNull property="groupNo" prepend="," > GROUP_NO = #groupNo# </isNotNull>
+		</dynamic>
+		where opr_id=#opr_id#
+	</update>
+
+	<update id="updateOperPassWord" parameterClass="operatorVo">
+		update TBL_CONSOLE_OPINFO set FALSE_TIME=0, LAST_UPD_TM=to_char(sysdate,'yyyyMMddHH24miss')
+		<dynamic>
+			<isNotNull property="password" prepend=",">password = #password#</isNotNull>
+			<isNotNull property="last_upd_opid" prepend=",">last_upd_opid = #last_upd_opid#</isNotNull>
+			<isNotNull property="passwd_expire_time" prepend=","> passwd_expire_time=#passwd_expire_time#</isNotNull>
+		</dynamic>
+		where opr_id=#opr_id#
+	</update>
+
+
+	<update id="delOper" parameterClass="operatorVo">
+		<![CDATA[
+			update TBL_CONSOLE_OPINFO set 
+			STATUS='3',LAST_UPD_OPID=#last_upd_opid#,LAST_UPD_TM=to_char(sysdate,'yyyyMMddHH24miss')
+			where opr_id=#opr_id#
+        ]]>
+	</update>
+
+	<insert id="insertOper" parameterClass="operatorVo">
+	
+		<![CDATA[
+			insert into TBL_CONSOLE_OPINFO 
+			  (opr_id,
+			   login_nm,
+			   op_name,
+			   PASSWORD,
+			   status,
+			   cert_type_no,
+			   cert_no,
+			   phone,
+			   mobile,
+			   email,
+			   description,
+			   create_tm,
+			   create_oprid,
+			   last_mod_tm,
+			   last_mod_oprid,
+			   misc,
+			   org_code,
+			   passwd_expire_time, reserved1, reserved2,GROUP_NO) values 
+			  (OPINFO_OPRID_SEQ.NEXTVAL,
+			   #login_nm#,
+			   #op_name#,
+			   #password#,
+			   #status#,
+			   #cert_type_no#,
+			   #cert_no#,
+			   #phone#,
+			   #mobile#,
+			   #email#,
+			   #description#,
+			   to_char(sysdate,'yyyyMMddHH24miss'),
+			   #create_oprid#,
+			   #last_mod_tm#,
+			   #last_mod_oprid#,
+			   #misc#,
+			   #org_code#,
+			   #passwd_expire_time#, #reserved1#, #reserved2#,#groupNo#)
+        ]]>
+	</insert>
+
+	<select id="selectPageOperLog" parameterClass="iCriteria" resultClass="operatorLogVo">
+		<![CDATA[
+			select * from dual;
+        ]]>
+	</select>
+
+
+	<select id="selectRolesByUser" parameterClass="String"
+		resultClass="roleVo">
+		select b.role_id roleId, b.role_nm roleName, a.opr_id
+		from tbl_console_userrole a, tbl_console_role b
+		where b.role_id = a.role_id and b.reserved1='0001'
+		and a.opr_id = #value#
+	</select>
+
+	<select id="selectAllRoles" resultClass="roleVo">
+		select ROLE_ID AS roleId,ROLE_NM AS roleName from TBL_CONSOLE_ROLE where
+		reserved1='0001'
+	</select>
+
+
+	<select id="selectRoles" parameterClass="operatorVo"
+		resultClass="roleVo">
+		<![CDATA[
+			select ROLE_ID AS roleId,ROLE_NM AS roleName from TBL_CONSOLE_ROLE
+        ]]>
+	</select>
+
+	<insert id="insertRols" parameterClass="java.util.Map">
+		<![CDATA[
+			insert into tbl_console_userrole (OPR_ID,ROLE_ID,FLAG) VALUES (#opr_id#,#role_id#,'0') 
+        ]]>
+	</insert>
+
+	<insert id="delRols" parameterClass="java.util.Map">
+
+		delete from tbl_console_userrole a where a.OPR_ID=#opr_id# and a.role_id
+		in (select c.role_id from tbl_console_role c where
+		c.reserved1='0001')
+      
+	</insert>
+
+	<select id="selectHadRoles" parameterClass="operatorVo"
+		resultClass="roleVo">
+		<![CDATA[
+			select r.ROLE_ID AS roleId,r.ROLE_NM AS roleName 
+			from tbl_console_userrole u left join tbl_console_role r
+			on u.role_id=r.role_id
+			where u.opr_id=#opr_id#
+        ]]>
+	</select>
+	
+	<!--wxb  -->
+	<select id="getPhoneNoByLogNm" parameterClass="java.lang.String" resultClass="OperatorVo">
+		select 
+			PHONE as phone
+		from TBL_CONSOLE_OPINFO 
+		where LOGIN_NM=#login_nm#
+	</select>
+
+</sqlMap>

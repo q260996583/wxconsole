@@ -1,0 +1,48 @@
+.tree-radio .ltr li.open, .tree-radio .rtl li.open { background-image:url("minus.gif"); background-position:2px 5px; background-repeat: no-repeat; }
+.tree-radio .ltr li.closed, .tree-radio .rtl li.closed, #jstree-dragged.tree-radio li li.open { background-image:url("plus.gif"); background-position:2px 5px; background-repeat: no-repeat; }
+.tree-radio li{width:auto !important;}
+.tree-radio li span{
+dispaly:inline;
+BORDER-BOTTOM: 0px; BORDER-LEFT: 0px;
+PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-LEFT: 0px; WIDTH: 16px; PADDING-RIGHT: 0px; BACKGROUND-REPEAT: no-repeat;
+BACKGROUND-POSITION: center 50%; HEIGHT: 18px; 
+VERTICAL-ALIGN: top; BORDER-TOP: 0px; BORDER-RIGHT: 0px; PADDING-TOP: 0px;
+}
+
+.tree-radio .ltr li.open span, 
+.tree-radio .rtl li.open span,
+.tree-radio .ltr li.open span.folderopen, 
+.tree-radio .rtl li.open span.folderopen{ 
+background-image:url("folder-open.gif");
+}
+
+.tree-radio .ltr li.closed span, 
+.tree-radio .rtl li.closed span,
+.tree-radio .ltr li.closed span.folderclosed, 
+.tree-radio .rtl li.closed span.folderclosed{ 
+background-image:url("folder.gif");
+}
+
+
+
+
+
+.tree-radio .ltr li.leaf  span, 
+.tree-radio .rtl li.leaf  span{ 
+background-image:url("leaf.gif");
+}
+.tree-radio .ltr li.menu.leaf  span,
+.tree-radio .rtl li.menu.leaf  span{ 
+background-image:url("menu.gif") ;
+}
+.tree-radio .ltr li.button.leaf  span,
+.tree-radio .rtl li.button.leaf  span{ 
+background-image:url("leaf.gif") ;
+}
+
+.tree-radio li a{	
+ 	dispaly:inline;
+}
+.tree-radio li a, .tree-radio li a.unchecked { background-image:url("ui-radio-button-uncheck.png"); }
+.tree-radio li a.checked { background-image:url("ui-radio-button.png"); }
+.tree-radio li a.clicked, .tree-radio li span.clicked { background-color:transparent; border-color:transparent; color:black; }

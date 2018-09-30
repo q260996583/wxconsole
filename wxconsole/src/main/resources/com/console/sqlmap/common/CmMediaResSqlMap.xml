@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- Name:  CmMediaRes-sqlmap.xml				-->
+<!-- Table: TBL_CM_MEDIA_RES (媒体资源) 	-->
+<!-- Auth:	AutoCode4J	-->
+<!-- Ver:		1.0	-->
+<sqlMap namespace="TBL_CM_MEDIA_RES">
+	<!-- type -->
+	<typeAlias alias="CmMediaResVo" type="com.jiuyv.yl.console.common.entity.CmMediaResVo" />
+	
+	<!-- select -->
+	<sql id="selectPart">
+		select
+					  t0.MED_SEQ as medSeq
+		       ,t0.VERSION as version
+		       ,t0.MED_PATH as medPath
+		       ,t0.MED_DIR as medDir
+		       ,t0.MED_TYPE as medType
+		       ,t0.MED_NAME as medName
+		       ,t0.MED_THUMB as medThumb
+		       ,t0.MED_CONTENT as medContent
+		       ,t0.MED_DESC as medDesc
+		       ,t0.MIME_TYPE as mimeType
+		       ,t0.CUSTOMER_CODE as customerCode
+		       ,t0.MED_INFO as medInfo
+		       ,t0.REC_CRT_TIME as recCrtTime
+		       ,t0.REC_CRT_ACC as recCrtAcc
+		       ,t0.REF_NO as refNo
+		  from TBL_CM_MEDIA_RES as t0
+	</sql>
+	<select id="__select" parameterClass="iCriteria" resultClass="CmMediaResVo">
+ 	 	<include refid="selectPart"/>
+ 	 	where 1=1
+ 	</select>
+ 	
+ 	<select id="__selectByPk" resultClass="CmMediaResVo">
+ 	 	<include refid="selectPart"/>
+ 	 	where t0.MED_SEQ = #medSeq#
+ 	</select>
+	<!-- insert -->
+	<!--
+	<insert id="__insert" parameterClass="CmMediaResVo">
+		insert into TBL_CM_MEDIA_RES (
+			  MED_SEQ,VERSION,MED_PATH,MED_DIR,MED_TYPE,MED_NAME,MED_THUMB,MED_CONTENT,MED_DESC,MIME_TYPE,CUSTOMER_CODE,MED_INFO,REC_CRT_TIME,REC_CRT_ACC,MID
+		)values(
+			  #medSeq#,0,#medPath#,#medDir#,#medType#,#medName#,#medThumb#,#medContent#,#medDesc#,#mimeType#,#customerCode#,#medInfo#,#recCrtTime#,#recCrtAcc#,#mid#
+		)
+	</insert>
+	-->
+	<!-- insert -->
+	<insert id="__insert" parameterClass="CmMediaResVo">
+		<selectKey keyProperty="medSeq" type="pre" resultClass="java.lang.Long">select SEQ_CM_MEDIA_RES.nextval from dual</selectKey>
+		insert into TBL_CM_MEDIA_RES (VERSION,MED_SEQ,REC_CRT_TIME
+		<dynamic>
+			<isNotNull property="medPath" prepend=",">MED_PATH</isNotNull>
+			<isNotNull property="medDir" prepend=",">MED_DIR</isNotNull>
+			<isNotNull property="medType" prepend=",">MED_TYPE</isNotNull>
+			<isNotNull property="medName" prepend=",">MED_NAME</isNotNull>
+			<isNotNull property="medThumb" prepend=",">MED_THUMB</isNotNull>
+			<isNotNull property="medContent" prepend=",">MED_CONTENT</isNotNull>
+			<isNotNull property="medDesc" prepend=",">MED_DESC</isNotNull>
+			<isNotNull property="mimeType" prepend=",">MIME_TYPE</isNotNull>
+			<isNotNull property="customerCode" prepend=",">CUSTOMER_CODE</isNotNull>
+			<isNotNull property="medInfo" prepend=",">MED_INFO</isNotNull>
+			<isNotNull property="recCrtAcc" prepend=",">REC_CRT_ACC</isNotNull>
+			<isNotNull property="refNo" prepend=",">REF_NO</isNotNull>
+	 	</dynamic>
+		)values(0,#medSeq#,to_char(current_timestamp,'yyyyMMddHH24miss')
+		<dynamic>
+			<isNotNull property="medPath" prepend=",">#medPath#</isNotNull>
+			<isNotNull property="medDir" prepend=",">#medDir#</isNotNull>
+			<isNotNull property="medType" prepend=",">#medType#</isNotNull>
+			<isNotNull property="medName" prepend=",">#medName#</isNotNull>
+			<isNotNull property="medThumb" prepend=",">#medThumb#</isNotNull>
+			<isNotNull property="medContent" prepend=",">#medContent#</isNotNull>
+			<isNotNull property="medDesc" prepend=",">#medDesc#</isNotNull>
+			<isNotNull property="mimeType" prepend=",">#mimeType#</isNotNull>
+			<isNotNull property="customerCode" prepend=",">#customerCode#</isNotNull>
+			<isNotNull property="medInfo" prepend=",">#medInfo#</isNotNull>
+			<isNotNull property="recCrtAcc" prepend=",">#recCrtAcc#</isNotNull>
+			<isNotNull property="refNo" prepend=",">#refNo#</isNotNull>
+	 	</dynamic>		
+		)
+	</insert>
+	
+	<!-- update -->
+	<update id="__update" parameterClass="CmMediaResVo">
+		update TBL_CM_MEDIA_RES set VERSION = VERSION + 1 
+		<dynamic>
+			<isNotNull property="medPath" prepend=",">MED_PATH = #medPath# </isNotNull>
+			<isNotNull property="medDir" prepend=",">MED_DIR = #medDir# </isNotNull>
+			<isNotNull property="medType" prepend=",">MED_TYPE = #medType# </isNotNull>
+			<isNotNull property="medName" prepend=",">MED_NAME = #medName# </isNotNull>
+			<isNotNull property="medThumb" prepend=",">MED_THUMB = #medThumb# </isNotNull>
+			<isNotNull property="medContent" prepend=",">MED_CONTENT = #medContent# </isNotNull>
+			<isNotNull property="medDesc" prepend=",">MED_DESC = #medDesc# </isNotNull>
+			<isNotNull property="mimeType" prepend=",">MIME_TYPE = #mimeType# </isNotNull>
+			<isNotNull property="customerCode" prepend=",">CUSTOMER_CODE = #customerCode# </isNotNull>
+			<isNotNull property="medInfo" prepend=",">MED_INFO = #medInfo# </isNotNull>
+			<isNotNull property="recCrtTime" prepend=",">REC_CRT_TIME = #recCrtTime# </isNotNull>
+			<isNotNull property="recCrtAcc" prepend=",">REC_CRT_ACC = #recCrtAcc# </isNotNull>
+			<isNotNull property="refNo" prepend=",">REF_NO = #refNo# </isNotNull>
+	 	</dynamic>
+		 where VERSION = #version# 
+		   and MED_SEQ = #medSeq#
+	</update>
+	
+		<select id="findThumbByPath" resultClass="CmMediaResVo">
+ 	 	select
+		   t0.MED_SEQ as medSeq
+		  ,t0.MED_PATH as medPath
+		  ,t0.MED_DIR as medDir
+		  ,t0.MED_NAME as medName
+		  ,t0.MIME_TYPE as mimeType
+		  ,t0.MED_THUMB as medThumb
+		  ,t0.REC_CRT_TIME as recCrtTime
+		  ,t0.REC_CRT_ACC as recCrtAcc
+		  ,t0.REF_NO as refNo
+	  from TBL_CM_MEDIA_RES t0
+	 where MED_PATH = #medPath#
+ 	</select>
+ 	
+ 	<select id="findContentByPath" resultClass="CmMediaResVo">
+ 	 	select
+		   t0.MED_SEQ as medSeq
+		  ,t0.MED_PATH as medPath
+		  ,t0.MED_DIR as medDir
+		  ,t0.MED_NAME as medName
+		  ,t0.MIME_TYPE as mimeType
+		  ,t0.MED_CONTENT as medContent
+		  ,t0.REC_CRT_TIME as recCrtTime
+		  ,t0.REC_CRT_ACC as recCrtAcc
+		  ,t0.REF_NO as refNo
+	  from TBL_CM_MEDIA_RES t0
+	 where MED_PATH = #medPath# 
+ 	</select>
+ 	
+ 	<select id="findThumbByMedSeqRefNo" resultClass="CmMediaResVo">
+ 	 	select
+		   t0.MED_SEQ as medSeq
+		  ,t0.MED_PATH as medPath
+		  ,t0.MED_DIR as medDir
+		  ,t0.MED_NAME as medName
+		  ,t0.MIME_TYPE as mimeType
+		  ,t0.MED_THUMB as medThumb
+		  ,t0.REC_CRT_TIME as recCrtTime
+		  ,t0.REC_CRT_ACC as recCrtAcc
+		  ,t0.REF_NO as refNo
+	  from TBL_CM_MEDIA_RES t0
+	 where t0.MED_SEQ = #medSeq#
+	   and t0.REF_NO = #refNo#
+ 	</select>
+ 	
+ 	<select id="findContentByMedSeqRefNo" resultClass="CmMediaResVo">
+ 	 	select
+		   t0.MED_SEQ as medSeq
+		  ,t0.MED_PATH as medPath
+		  ,t0.MED_DIR as medDir
+		  ,t0.MED_NAME as medName
+		  ,t0.MIME_TYPE as mimeType
+		  ,t0.MED_CONTENT as medContent
+		  ,t0.REC_CRT_TIME as recCrtTime
+		  ,t0.REC_CRT_ACC as recCrtAcc
+		  ,t0.REF_NO as refNo
+	  from TBL_CM_MEDIA_RES t0
+	 where t0.MED_SEQ = #medSeq#
+	   and t0.REF_NO = #refNo#
+ 	</select>
+	
+</sqlMap>

@@ -1,0 +1,20 @@
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+	<!-- 公共模块 -->
+	<package name="console.common" extends="demo-query-default">
+		<action name="findSysOrg" class="commonAction" method="findSysOrg"></action>
+		<action name="findBankInfoList" class="commonAction" method="findBankInfoList"></action>
+		<action name="findMccDesc" class="commonAction" method="findMccDesc" />
+		<action name="findSpecial" class="commonAction" method="findSpecial"></action>
+		<action name="findBankInfo" class="commonAction" method="findBankInfo"></action>
+	</package>
+	<package name="console.upload" extends="demo-upload-default">
+		<action name="uploadFile" class="commonAction" method="uploadFile"></action>
+		<action name="uploadImg" class="commonAction" method="uploadImg"></action>
+		<action name="uploadAttachFile" class="commonAction" method="uploadAttachFile"></action>
+		<action name="uploadAttachImg" class="commonAction" method="uploadAttachImg"></action>
+	</package>
+
+</struts>

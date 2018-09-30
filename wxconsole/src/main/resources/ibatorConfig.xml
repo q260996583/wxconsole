@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE ibatorConfiguration PUBLIC "-//Apache Software Foundation//DTD Apache iBATIS Ibator Configuration 1.0//EN" "http://ibatis.apache.org/dtd/ibator-config_1_0.dtd" >
+<ibatorConfiguration >
+  <classPathEntry location="E:/opt/mysql-connector-java-5.1.30.jar" />
+  <ibatorContext id="context1" >
+    <jdbcConnection driverClass="com.mysql.jdbc.Driver" 
+    connectionURL="jdbc:mysql://localhost:3306/pospuat?useUnicode=true&amp;characterEncoding=UTF-8" 
+    userId="root" password="123456" />
+    <javaModelGenerator targetPackage="com.jiuyv.yl.console.lottery.entity" targetProject="wxconsole" />
+    <sqlMapGenerator targetPackage="com.jiuyv.yl.console.lottery" targetProject="wxconsole" />
+    <daoGenerator targetPackage="com.jiuyv.yl.console.lottery.dao" targetProject="wxconsole" type="GENERIC-CI" />
+    <table schema="" tableName="TBL_LOTTERY_WELFARE" >
+      <!-- <columnOverride column="id" property="uid" /> -->
+    </table>
+  </ibatorContext>
+</ibatorConfiguration>

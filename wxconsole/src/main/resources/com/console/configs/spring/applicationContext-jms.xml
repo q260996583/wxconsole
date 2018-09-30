@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:cache="http://www.springframework.org/schema/cache"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:oxm="http://www.springframework.org/schema/oxm"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd  
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.1.xsd  
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd  
+   	http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
+   	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd">
+
+	<bean id="sendMessageUtils" class="com.jiuyv.yl.jms.client.JmsSendMessage">
+		<property name="template" ref="jmsTemplate" />
+		<property name="destination" ref="txnQueue" />
+		<property name="respDest" ref="txnReplyQueue" />
+		<property name="jmsTemplate4async" ref="jmsTemplate4async" />
+	</bean>
+
+	<!-- 配置JMS连接工厂 -->
+	<!-- 采用TCP长连接方式, 避免每次建立短连接需要的额外工作时间 -->
+	<bean id="connectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory"
+		destroy-method="stop">
+		<property name="maxConnections" value="1" />
+		<property name="connectionFactory">
+			<bean class="org.apache.activemq.spring.ActiveMQConnectionFactory">
+				<property name="brokerURL">
+					<value>${jms.broker.url}</value>
+				</property>
+				<property name="useCompression" value="true" />
+				<property name="useAsyncSend" value="true" />
+				<property name="userName" value="${jms.username}" />
+				<property name="password" value="${jms.password}" />
+				<property name="copyMessageOnSend" value="false" />
+				<property name="optimizeAcknowledge" value="true" />
+				<property name="alwaysSessionAsync" value="true" />
+			</bean>
+		</property>
+	</bean>
+
+
+
+	<!-- 配置JMS模版 -->
+	<bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory" ref="connectionFactory" />
+		<property name="receiveTimeout" value="${jms.revieve.timeout}" />
+		<property name="deliveryMode" value="1" />
+		<property name="explicitQosEnabled" value="true" />
+		<property name="timeToLive" value="3600000" />
+	</bean>
+	<bean id="jmsTemplate4async" class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory" ref="connectionFactory" />
+		<property name="receiveTimeout" value="${jms.revieve.timeout}" />
+		<property name="deliveryMode" value="1" />
+		<property name="explicitQosEnabled" value="true" />
+		<property name="timeToLive" value="${jms.async.timeout}" />
+	</bean>
+
+
+	<!-- queue start -->
+	<bean id="txnQueue" class="org.apache.activemq.command.ActiveMQQueue">
+		<constructor-arg index="0" value="${jms.queue.txnQueue}" />
+	</bean>
+
+	<bean id="txnReplyQueue" class="org.apache.activemq.command.ActiveMQQueue">
+		<constructor-arg index="0" value="${jms.queue.txnReplyQueue}" />
+	</bean>
+	
+	<!-- queue end -->
+
+	<!-- 监听器 -->
+	<bean id="clientListenerContainer"
+		class="com.jiuyv.yl.jms.client.ClientReplyMsgListenerContainer" destroy-method="destroy">
+		<property name="concurrentConsumers" value="1" />
+		<property name="maxConcurrentConsumers" value="3" />
+		<property name="connectionFactory" ref="connectionFactory" />
+		<property name="destination" ref="txnReplyQueue" />
+		<property name="messageListener" ref="txnListener" />
+		<property name="localSystem" value="${jms.localsystem}" />
+	</bean>
+
+	<bean id="txnListener" class="com.jiuyv.yl.jms.client.JmsClientRecvListener">
+		<property name="clientrecv" ref="sendMessageUtils" />
+	</bean>
+	
+	<bean id="jsonMapper" class="com.jiuyv.yl.jms.client.NoProperisObjectMapper" />
+	
+	<!-- 通信类service -->
+	<bean id="defaultMessageService" class="com.jiuyv.yl.jms.client.JMSSendMessageImpl">
+		<property name="jmsSendUtil" ref="sendMessageUtils" />
+		<property name="jsonMapper" ref="jsonMapper" />
+		<property name="localSystem" value="${jms.localsystem}" />
+		<property name="receivePosgate" value="${jms.receiveposgate}" />
+		<property name="receivePosCenter" value="${jms.receiveposcenter}" />
+		<property name="receivePosCups" value="${jms.receiveposcups}" />
+		<property name="receivePosCcb" value="${jms.receiveposccb}" />
+		<property name="receivedfsgate" value="${jms.receivedfsgate}" />
+	</bean>
+
+</beans>

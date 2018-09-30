@@ -1,0 +1,22 @@
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+	<!-- 商户用户日志管理 -->
+	<package name="console.sysMerOprlog" extends="demo-query-default">
+		<action name="querySysMerOprlogSetup" class="sysMerOprlogAction"  method="querySysMerOprlogSetup">
+			<result name="success">/page/console/business/sysMerOprlog/sysMerOprlog.jsp</result>
+		</action>
+		<action name="findSysMerOprlog" class="sysMerOprlogAction" method="findSysMerOprlog"></action>
+		<action name="findSysMerOprlogDetail" class="sysMerOprlogAction" method="findSysMerOprlogDetail"></action>
+	</package>
+	<!-- 商户用户日志 -->
+	<package name="console.sysMerUser" extends="demo-query-default">
+		<action name="querySysMerUserSetup" class="sysMerUserAction"  method="querySysMerUserSetup">
+			<result name="success">/page/console/business/sysMerUser/sysMerUser.jsp</result>
+		</action>
+		<action name="findSysMerUser" class="sysMerUserAction" method="findSysMerUser"></action>
+		<action name="findSysMerUserDetail" class="sysMerUserAction" method="findSysMerUserDetail"></action>
+		<action name="unlockSysMerUser" class="sysMerUserAction" method="unlockSysMerUser"></action>
+	</package>
+</struts>

@@ -1,0 +1,144 @@
+body,div,a,span,li,td,h1,h2,h3,h4,h5,h6,p,input{ font-family: 'Microsoft YaHei', SimHei, SimSun;}
+body{
+  font-size: 10pt;
+ 	background-color: #ffffff;
+}
+.qtable{
+ background-color: #8392a5;
+
+}
+.qtable tr{
+ background-color: #b5d2ed;
+}
+.qtable td{
+ background-color: #FFFFFF;
+}
+.qtable .qlabel {
+ text-align:right;
+ white-space:nowrap;
+ padding-right:5px;
+background-color: #FFFFFF;
+}
+.qtable .qinput{
+padding-left:5px;
+background-color: #FFFFFF;
+white-space: nowrap;
+}
+
+
+
+  .bt{
+        background: transparent url(../images/button_bg.gif) repeat scroll 0 0;
+        border: 1px solid #7DE7FD;
+        margin-left:10px;
+      width:80px;
+      font-size:14px;
+        height: 22px;
+        cursor: pointer;
+    }
+    .bt:HOVER {
+        background: transparent url(../images/button_bg2.gif) repeat scroll 0 0;
+        border: 1px solid #C3A336;
+    }
+
+
+
+
+.fform{
+	 display:none;
+}
+.ftable {
+	background-color:#8392a5;
+}
+.ftable tr{
+	background-color: #f2f2f2;
+	
+}
+.ftable .flabel{
+	width:150;
+	height:20;
+	text-align: right;
+}
+
+.ftable .flabels{
+	width:150;
+	height:20;
+	text-align: center;
+}
+
+.ftable .flabelss{
+	width:100px;
+	height:20;
+	text-align: center;
+}
+.ftable .finput{
+	padding-left:5px;
+	height:27;
+	text-align: left;
+	}
+.ftable .finput textarea{
+	width: 300px;	
+}
+	
+	.btcheckbox{
+	margin-right: 15px;
+}	
+	
+	
+.detailDialog{
+   background:#dfe8f6 !important;
+ }
+ 
+ .detailDialog table{
+  margin:auto;
+  }   
+.detailDialog .detailtd{    
+    vertical-align:top;
+ }
+
+ 
+.detailDialog  .restree{
+    height:530px;
+    overflow:auto;
+    width:400px; 
+    background:#ffffff;
+ }
+
+	
+	
+	
+	
+.detailDialog .titleDiv {
+	background: url(../images/headbg.gif) repeat-x top;
+	border: 1px solid #99bbe8;
+	border-top: 0px;
+	font-weight: bold;
+	display: block;
+	overflow: hidden;
+	white-space: nowrap;
+	position: relative;
+}
+
+.detailDialog .titleDiv div {
+	padding: 4px;
+	white-space: nowrap;
+}
+.warning{	
+		text-align:center;
+		height:40px;
+		font-size:14px;
+		padding-top:20px;
+		display:none;
+		}
+.detailDialog .titleDiv div.dtitle {
+	color: #15428b;
+	padding: 6px;
+	white-space: nowrap;
+}
+
+.tree-checkbox li{width:auto !important;}
+
+.diff{
+	color:red;
+}
+.txt-red{color: red}

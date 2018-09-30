@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="common">
+	<typeAlias alias="oprlog" type="com.jiuyv.yl.console.common.entity.OprlogVo" />
+	<typeAlias alias="sysorg" type="com.jiuyv.yl.console.orgmngr.entity.TblSysOrgInfoVo" />
+	<typeAlias alias="bankAccntVo" type="com.jiuyv.yl.console.orgmngr.entity.BankAccntVo" />
+	<typeAlias alias="secCodeVo" type="com.jiuyv.yl.console.common.entity.SecCodeVo"/>
+	<typeAlias alias="BankClearSecRptVo" type="com.jiuyv.yl.console.report.entity.BankClearSecRptVo" />
+	<typeAlias alias="SpecMccRateVo" type="com.jiuyv.yl.console.orgmngr.entity.SpecMccRateVo" />
+	<typeAlias alias="MerchantSubVo" type="com.jiuyv.yl.console.orgmngr.entity.MerchantSubVo" />
+	<typeAlias alias="CoreMccRateVo" type="com.jiuyv.yl.console.orgmngr.entity.CoreMccRateVo" />
+	
+	<!-- 查询机构对应的外部商户号 -->
+	<select id="select_all_out_mid" parameterClass="iCriteria" resultClass="MerchantSubVo">
+	select 
+		m.mer_out_code as merOutCode,
+		m.card_accept_name as cardAcceptName,
+		m.bank_code as bankCode 
+	from tbl_core_mer_org_info m 
+	where 1=1 
+	</select>
+	
+	<sql id="__selectSysCode">
+		select CODE_TYPE as codeType,
+			   CODE_TYPE_NAME as codeTypeName,
+			   CODE_NO as codeNo,
+			   CODE_NAME as codeName,
+			   CODE_LANG as codeLang,
+			   CODE_SORT as codeSort,
+			   CODE_FLAG as codeFlag,
+			   RESERVED1 as reserved1,
+			   RESERVED2 as reserved2 
+		from TBL_SYS_CODE
+	</sql>
+	
+	<!-- 根据codeType查询SysCode -->
+	<select id="findCodeByType" resultClass="secCodeVo">
+		<include refid="__selectSysCode" />
+		where code_type=#codeType#
+		order by code_sort asc
+	</select>
+	
+	<!-- 查询系统参数 -->
+	<select id="select_sec_code" parameterClass="iCriteria" resultClass="secCodeVo">
+		select CODE_TYPE as codeType,
+			   CODE_TYPE_NAME as codeTypeName,
+			   CODE_NO as codeNo,
+			   CODE_NAME as codeName,
+			   CODE_LANG as codeLang,
+			   CODE_SORT as codeSort,
+			   CODE_FLAG as codeFlag,
+			   LAST_UPDATE_ORG as lastUpdateOrg,
+			   LAST_UPDATE_ACC as lastUpdateAcc,
+			   LAST_UPDATE_TIME as lastUpdateTime,
+			   RESERVED1 as reserved1,
+			   RESERVED2 as reserved2 
+		from TBL_SYS_CODE where 1=1
+	</select>
+	
+	<!-- 查询交易类型 -->
+ 	 <select id="selectOutTransSecCode" parameterClass="iCriteria" resultClass="secCodeVo">
+		select CODE_TYPE as codeType,
+			   CODE_TYPE_NAME as codeTypeName,
+			   CODE_NO as codeNo,
+			   CODE_NAME as codeName,
+			   CODE_LANG as codeLang,
+			   CODE_SORT as codeSort,
+			   CODE_FLAG as codeFlag,
+			   LAST_UPDATE_ORG as lastUpdateOrg,
+			   LAST_UPDATE_ACC as lastUpdateAcc,
+			   LAST_UPDATE_TIME as lastUpdateTime,
+			   RESERVED1 as reserved1,
+			   RESERVED2 as reserved2 
+		from TBL_SYS_CODE where 1=1 and code_type = 'CENTER_TXN_TYPE' 
+		  and （code_no &lt; '081003')
+	</select>
+	<!--（code_no &lt; '081003' or code_no = '880001' or code_no = '880002' )-->
+	
+	<select id="select_any_code" parameterClass="iCriteria" resultClass="secCodeVo">
+		select CODE_TYPE as codeType,
+				CODE_TYPE_NAME as codeTypeName,
+				(case when CODE_NAME='交易金额' then 'TRANSAMT DESC,TRANSNUM' else 'TRANSNUM DESC,TRANSAMT' end) as codeNo,
+				CODE_NAME as codeName,
+				CODE_LANG as codeLang,
+				CODE_SORT as codeSort,
+				CODE_FLAG as codeFlag,
+				LAST_UPDATE_ORG as lastUpdateOrg,
+				LAST_UPDATE_ACC as lastUpdateAcc,
+				LAST_UPDATE_TIME as lastUpdateTime,
+				RESERVED1 as reserved1,
+				RESERVED2 as reserved2
+		from TBL_SYS_CODE 
+		where 1=1 AND CODE_TYPE='RANK_TYPE' AND CODE_NO IN
+		('TRANSAMT','TRANSNUM')
+	</select>
+	
+	<select id="select_send_res"  parameterClass="iCriteria" resultClass="secCodeVo">
+		select CODE_TYPE as codeType,
+				   CODE_TYPE_NAME as codeTypeName,
+				   CODE_NO as codeNo,
+				   CODE_NAME as codeName,
+				   CODE_LANG as codeLang,
+				   CODE_SORT as codeSort,
+				   CODE_FLAG as codeFlag,
+				   LAST_UPDATE_ORG as lastUpdateOrg,
+				   LAST_UPDATE_ACC as lastUpdateAcc,
+				   LAST_UPDATE_TIME as lastUpdateTime,
+				   RESERVED1 as reserved1,
+				   RESERVED2 as reserved2 
+			from TBL_SYS_CODE where 1=1 
+	</select>
+	
+	<select id="findCodeByTypeAndNo" resultClass="secCodeVo">
+		<include refid="__selectSysCode" />
+		where code_type= #codeType# 
+			<isNotNull property="codeNoList">
+			and code_no in   
+                <iterate property="codeNoList" open="(" close=")" conjunction="," >   
+                    #codeNoList[]#   
+                </iterate>
+            </isNotNull>
+		order by code_sort asc
+	</select>
+	
+	<!-- 插入系统日志 -->
+	<insert id="insert_oprlog" parameterClass="oprlog">
+	<![CDATA[
+	insert into Tbl_CONSOLE_OPR_LOG 
+		(STLM_DATE,OPR_NO,OPR_ORG_CODE,OPR_USER_ID,OPR_LOGIN_ID,
+		OPR_URL,OPR_SYS_CODE,OPR_TIME,OPR_IP,OPR_SUCCESS,OPR_RESULT_INFO,
+		OPR_REMARK,RESOURCE_ID,RESOURCE_ZH)
+		values
+		(to_char(sysdate,'yyyyMMdd'),
+		#oprNo#,
+		#oprOrgCode#,
+		#oprUserId#,
+		#oprLoginId#,
+		#oprUrl#,
+		#oprSysCode#,
+		to_char(sysdate,'yyyyMMddHH24miss') ,
+		#oprIp#,
+		#oprSuccess#,
+		#oprResultInfo#,
+		#oprRemark#,
+		#resourceId#,
+		#resourceZh#)
+	]]>
+	</insert>
+	
+	<!-- 插入系统日志 -->
+	<insert id="insert_loginOprlog" parameterClass="oprlog">
+	<![CDATA[
+	insert into Tbl_CONSOLE_OPR_LOG 
+		(STLM_DATE,OPR_NO,OPR_ORG_CODE,OPR_USER_ID,OPR_LOGIN_ID,
+		OPR_URL,OPR_SYS_CODE,OPR_TIME,OPR_IP,OPR_SUCCESS,OPR_RESULT_INFO,
+		OPR_REMARK,RESOURCE_ID,RESOURCE_ZH)
+		values
+		(date_format(sysdate,'yyyyMMdd'),
+		OPRLOG_SEQ.NEXTVAL,
+		#oprOrgCode#,
+		#oprUserId#,
+		#oprLoginId#,
+		#oprUrl#,
+		#oprSysCode#,
+		date_format(sysdate,'yyyyMMddHH24miss') ,
+		#oprIp#,
+		#oprSuccess#,
+		#oprResultInfo#,
+		#oprRemark#,
+		#resourceId#,
+		#resourceZh#)
+	]]>
+	</insert>
+
+	<!-- 查询系统日志 -->
+	<select id="selec_opr_log" parameterClass="iCriteria"
+		resultClass="oprlog">
+	<![CDATA[
+		select 
+			lg.STLM_DATE as stlmDate ,
+			lg.OPR_NO as oprNo ,
+			lg.OPR_ORG_CODE as oprOrgCode ,
+			lg.OPR_USER_ID as oprUserId ,
+			lg.OPR_LOGIN_ID as oprLoginId ,
+			lg.OPR_URL as oprUrl ,
+			lg.OPR_SYS_CODE as oprSysCode ,
+			lg.OPR_TIME as oprTime ,
+			lg.OPR_IP as oprIp ,
+			lg.OPR_SUCCESS as oprSuccess ,
+			lg.OPR_RESULT_INFO as oprResultInfo,
+			lg.OPR_REMARK as oprRemark ,
+			lg.RESOURCE_ID as resourceId,
+			lg.RESOURCE_ZH as resourceZh			
+		  from Tbl_CONSOLE_OPR_LOG  lg 
+		
+	]]>
+	</select>
+
+
+	<!-- 查询序列 -->
+	<select id="get_next_seq" resultClass="java.lang.String">
+		<!-- select nextval for $seqName$ from sysibm.sysdummy1 -->
+		select $seqName$.NEXTVAL from dual
+	</select>
+
+
+	<select id="select_stlm_seq" parameterClass="String"
+		resultClass="String">
+		select
+		$seqName$.nextval as stlmSeq from dual
+	</select>
+
+	<select id="select_sysorg" parameterClass="iCriteria" resultClass="sysorg">
+		select 	TblSysOrg.version as version,
+				TblSysOrg.org_code as orgCode,
+				TblSysOrg.father_org_code as fatherOrgCode,
+				TblSysOrg.org_name as orgName,
+				TblSysOrg.org_type as orgType,
+				TblSysOrg.pers_name as persName,
+				TblSysOrg.pers_phone as persPhone,
+				TblSysOrg.email as email,
+				TblSysOrg.org_addr as orgAddr,
+				TblSysOrg.status as status
+		 from tbl_sys_org  TblSysOrg where rownum>0
+	</select>
+<!--	<statement id="getNextValueOfSequence" resultClass="string">
+		select $sequenceName$.nextVal from dual
+	</statement>  -->
+	
+	<statement id="getNextValueOfSequence" parameterClass="java.lang.String" resultClass="java.lang.String">
+		select lpad(date_format($sequenceName$.nextVal),12,'0')  as reqNo from dual
+	</statement>
+	
+	<statement id="getDate" resultClass="java.lang.String">
+		select date_format(current_timestamp,'yyyyMMdd') from dual
+	</statement>
+	<statement id="getDateTime" resultClass="java.lang.String">
+		select to_char(current_timestamp,'yyyyMMddHH24miss') from dual
+	</statement>
+	<statement id="getDateForDate" resultClass="java.util.Date">
+		select sysdate from dual
+	</statement>
+	
+	<select id="selectBankInfo" parameterClass="iCriteria" resultClass="bankAccntVo">
+		select a.bank_no    as bankNo,
+		       a.bank_name  as bankName,
+		       a.accnt_no   as accntNo,
+		       a.bank_title as bankTitle,
+		       a.bank_accnt_id as bankAccntId,
+		       a.bank_accnt_type as bankAccntType,
+		       a.file_template as fileTemplate,
+		       a.accnt_name as accntName
+		  from tbl_core_bank_accnt a
+		 where a.accnt_flag='4'
+ 	 </select>
+ 	 
+	<select id="selectMccDesc" parameterClass="iCriteria" resultClass="BankClearSecRptVo">
+	select t.mcc        as mcc,
+	       t.mcc_desc   as mccDesc,
+	       t.rate       as rate,
+	       t.max_fee    as maxFee,
+	       t.mcc_grp    as mccGrp,
+	       tgr.mcc_desc as mccGrpDesc
+	  from tbl_core_mcc_rate t
+	  left join tbl_core_mccgrp_rate tgr
+	    on t.mcc_grp = tgr.mcc_grp
+	 where 1 = 1
+	</select>
+	
+	<select id="selectSpecialDesc" parameterClass="iCriteria" resultClass="SpecMccRateVo">
+		select CONCAT(CONCAT(t.mcc_type,'-'),t.mcc_lev)  as specialNo,
+		       t.mcc_type as mccType,
+		       t.mcc_lev as mccLev,
+		       t.mcc as mcc,
+		       t.mcc_desc as mccDesc,
+		       t.fee_stlm_type as feeStlmType,
+		       t.rate as rate,
+		       t.un_rate as unRate,
+		       t.card_rate as cardRate,
+		       t.max_fee as maxFee,
+		       t.max_un_fee as maxUnFee,
+		       t.max_card_fee as maxCardFee,
+		       t.fee_val as feeVal,
+		       t.fee_un_val as feeUnVal,
+		       t.fee_card_val as feeCardVal
+		  from tbl_core_spec_mcc_rate t
+	</select>
+	
+	<select id="findAllMccCode" resultClass="CoreMccRateVo">
+		select t0.mcc as mcc
+		 			,t0.mcc_type as mccType
+		 			,t0.mcc_grp as mccGrp
+		  from tbl_core_mcc_rate t0
+	</select>
+	
+	<select id="findCoreMccRate" resultClass="CoreMccRateVo">
+		select
+					  t0.MCC as mcc
+		       ,t0.MCC_DESC as mccDesc
+		       ,t0.FEE_STLM_TYPE as feeStlmType
+		       ,t0.RATE as rate
+		       ,t0.UN_RATE as unRate
+		       ,t0.CARD_RATE as cardRate
+		       ,t0.MAX_FEE as maxFee
+		       ,t0.MAX_UN_FEE as maxUnFee
+		       ,t0.MAX_CARD_FEE as maxCardFee
+		       ,t0.FEE_VAL as feeVal
+		       ,t0.FEE_UN_VAL as feeUnVal
+		       ,t0.FEE_CARD_VAL as feeCardVal
+		       ,t0.MAX_BRAND_FEE as maxBrandFee
+		       ,t0.MCC_TYPE as mccType
+		       ,t0.MCC_GRP as mccGrp
+		  from TBL_CORE_MCC_RATE t0 
+	</select>
+
+	<select id="findCoreMccRatePage" parameterClass="iCriteria" resultClass="CoreMccRateVo">
+		select
+					  t0.MCC as mcc
+		       ,t0.MCC_DESC as mccDesc
+		       ,t0.FEE_STLM_TYPE as feeStlmType
+		       ,t0.RATE as rate
+		       ,t0.UN_RATE as unRate
+		       ,t0.CARD_RATE as cardRate
+		       ,t0.MAX_FEE as maxFee
+		       ,t0.MAX_UN_FEE as maxUnFee
+		       ,t0.MAX_CARD_FEE as maxCardFee
+		       ,t0.FEE_VAL as feeVal
+		       ,t0.FEE_UN_VAL as feeUnVal
+		       ,t0.FEE_CARD_VAL as feeCardVal
+		       ,t0.MAX_BRAND_FEE as maxBrandFee
+		       ,t0.MCC_TYPE as mccType
+		       ,t0.MCC_GRP as mccGrp
+		  from TBL_CORE_MCC_RATE t0 
+		 where 1=1
+	</select>
+	
+	<!-- Operation in TBL_SYS_SEQ -->
+	<insert id="insertSysSeq">
+		insert into TBL_SYS_SEQ (SEQ_CODE, SEQ_VALUE)
+		values( #seqCode#, #initValue#)
+	</insert>
+	
+	<select id="currSysSeqNo" resultClass="java.lang.Long">
+		select SEQ_VALUE as seqValue 
+		  from TBL_SYS_SEQ
+		 where SEQ_CODE = #seqCode# 
+		   for update
+	</select>
+	
+	<update id="updateSysSeqNo">
+		update TBL_SYS_SEQ set SEQ_VALUE = SEQ_VALUE + 1
+		 where SEQ_CODE = #seqCode#
+		   and SEQ_VALUE = #currSeqNo#
+	</update>
+	
+	<update id="updateCodeName" parameterClass="secCodeVo">
+		update TBL_SYS_CODE set code_name = #codeName#
+		 where code_type=#codeType# and code_no=#codeNo#
+	</update>
+</sqlMap>

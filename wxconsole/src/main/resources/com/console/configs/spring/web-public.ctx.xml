@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+
+
+	<bean id="errorInpt" class="com.jiuyv.common.web.interceptor.AbstractConvertInterceptor" scope="prototype">
+		<property name="sourceAttrName" value="errors"></property>
+		<property name="converter">
+			<bean class="com.jiuyv.common.web.interceptor.json.ValidateErrorConverter"></bean>
+		</property>
+	</bean>
+	<bean id="exceptInpt" class="com.jiuyv.common.web.interceptor.AbstractConvertInterceptor" scope="prototype">
+		<property name="sourceAttrName" value="exception"></property>
+		<property name="converter">
+			<bean class="com.jiuyv.common.web.interceptor.json.DefaultExceptionConverter"></bean>
+		</property>
+	</bean>
+	<bean id="navigaeInpt" class="com.jiuyv.common.web.interceptor.Navigation" scope="prototype">
+	    <property name="resourceCache"><ref bean="resourceCache"/></property>
+	
+	</bean>
+	
+	<bean id="jsonInpt" class="com.jiuyv.common.web.interceptor.json.DefaultJSONInterceptor" scope="prototype"></bean>
+	<bean id="pageInpt" class="com.jiuyv.common.web.interceptor.AbstractConditionInterceptor" scope="prototype"></bean>
+	
+	
+	<bean id="logInpt" class="com.jiuyv.common.web.interceptor.DBLogInterceptor" scope="prototype">
+		<property name="oprlogDao"><ref bean="logDao"/></property>
+		<property name="resourceCache"><ref bean="resourceCache"/></property>
+	</bean>
+	<bean id="exceptionHandler" class="com.jiuyv.common.web.action.ExceptionHandleAction" scope="prototype"></bean>
+</beans>

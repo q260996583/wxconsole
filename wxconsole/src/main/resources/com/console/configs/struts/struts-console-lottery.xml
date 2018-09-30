@@ -1,0 +1,29 @@
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+	<!-- 平台管理 -->
+	<package name="console.lottery" extends="demo-query-default">
+		<action name="queryRobot" class="robotManagerAction" method="queryRobot">
+			<result name="success">/page/console/business/lottery/lottery.jsp</result>
+		</action>
+		<action name="queryRobotThree" class="robotManagerAction" method="queryRobot">
+			<result name="success">/page/console/business/lottery/lotteryThree.jsp</result>
+		</action>
+		<action name="runRobot" class="robotManagerAction" method="runRobot"></action>
+		<action name="destoryRobot" class="robotManagerAction" method="destoryRobot"></action>
+		<action name="createRobot" class="robotManagerAction" method="createRobot"></action>
+		<action name="queryLotterMerInfo" class="robotManagerAction" method="queryLotterMerInfo">
+			<result name="success">/page/console/business/lottery/qryLotterMer.jsp</result>
+		</action>
+		<action name="findLotterMerInfo" class="robotManagerAction" method="findLotterMerInfo"/>
+		<action name="doUpdateLotterMerAmt" class="robotManagerAction" method="doUpdateLotterMerAmt"/>
+		<action name="getLoginInfo" class="robotManagerAction" method="getLoginInfo"/>
+		<action name="executeRobot" class="robotManagerAction" method="executeRobot"/>
+		<action name="selectLotteryOrder" class="robotManagerAction" method="selectLotteryOrder">
+			<result name="success">/page/console/business/lottery/qryLotterOrder.jsp</result>
+		</action>
+		<action name="selectLotteryOrderInfo" class="robotManagerAction" method="selectLotteryOrderInfo"/>
+		<action name="dropLotteryMerchant" class="robotManagerAction" method="dropLotteryMerchant"/>
+	</package>
+</struts>

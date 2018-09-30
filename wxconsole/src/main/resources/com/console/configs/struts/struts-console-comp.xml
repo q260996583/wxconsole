@@ -1,0 +1,16 @@
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+	<!-- 组件管理 -->
+	<package name="console.comp" extends="demo-query-default">
+		<!-- 交易流水查询 -->
+		<action name="getCompPage" class="compMngrAction" >
+			<result name="success">/page/console/business/comp/comp.jsp</result>
+		</action>
+		<action name="doFindCompDetail" class="compMngrAction" method="doFindCompDetail"></action>
+		<action name="doFindCompNumber" class="compMngrAction" method="doFindCompNumber"></action>
+	</package>
+	
+
+</struts>

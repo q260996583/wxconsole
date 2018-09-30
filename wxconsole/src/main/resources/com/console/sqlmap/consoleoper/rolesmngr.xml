@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ROLEMNGR">
+	<!-- 角色 -->
+	<typeAlias alias="roleVo"
+		type="com.jiuyv.yl.console.consoleoper.entity.RoleVo" />
+
+	<!-- 资源 -->
+	<typeAlias alias="resourceVo"
+		type="com.jiuyv.yl.console.consoleoper.entity.ResourceVo" />
+
+	<typeAlias alias="roleResVo"
+		type="com.jiuyv.yl.console.security.entity.RoleResVo" />
+
+	<!-- 查询角色对应的资源 -->
+	<select id="select_rec_by_role" parameterClass="roleVo"
+		resultClass="roleResVo">
+		select a.role_id as roleId,a.resource_id as resourceID from
+		tbl_console_roleres a where a.role_id = #roleId#
+	</select>
+
+
+	<!-- 删除角色对应的资源 -->
+	<delete id="delete_rec_by_role" parameterClass="roleVo">
+		delete from
+		tbl_console_roleres a where a.role_id = #roleId# and a.role_id
+		in (select c.role_id from tbl_console_role c where
+		c.reserved1='0001')
+	</delete>
+
+	<!-- 新增角色对应的资源 -->
+	<insert id="insert_rec_by_role" parameterClass="roleResVo">
+		insert into
+		tbl_console_roleres (role_id,resource_id,flag) values
+		(#roleId#, #resourceID#,'0')
+	</insert>
+
+	<!-- 修改角色 -->
+	<update id="update_Role" parameterClass="roleVo">
+		<![CDATA[
+			update TBL_CONSOLE_ROLE set 
+			role_nm=#roleName#,
+			role_desc=#role_desc#,
+			   org_code=#org_code#,
+			   flag=#flag#,
+			   memo=#memo#,
+			   LAST_UPD_OPRID=#last_upd_oprid#,
+			   LAST_UPD_TM=to_char(sysdate,'yyyyMMddHH24miss')
+			where role_id=#roleId#
+        ]]>
+	</update>
+
+	<!-- 查询角色对应的资源 -->
+	<select id="check_user_with_roleid" parameterClass="roleVo"
+		resultClass="String">
+		select count(1) from tbl_console_userrole tuserrole where
+		tuserrole.role_id=#roleId#
+	</select>
+
+	<!-- 查询角色对应的资源 -->
+	<select id="check_user_with_roleid_userid" parameterClass="java.util.Map"
+		resultClass="String">
+		select count(1) from tbl_console_userrole tuserrole where
+		tuserrole.role_id=#roleId# and tuserrole.opr_id=#oprId#
+	</select>
+
+
+
+	<!-- 删除角色 -->
+	<delete id="delete_role" parameterClass="roleVo">
+		delete from
+		tbl_console_role a where a.role_id = #roleId# and a.reserved1='0001'
+	</delete>
+	<insert id="insertRole" parameterClass="roleVo">
+		<selectKey keyProperty="roleId" resultClass="string">
+			select TBL_CONSOLE_ROLE_ROLEID_seq.NEXTVAL from dual
+		</selectKey>
+		insert into TBL_CONSOLE_ROLE
+		(role_id,
+		role_nm,
+		role_desc,
+		org_code,
+		flag,
+		memo,
+		create_oprid,
+		create_tm,
+		Reserved1,
+		last_upd_oprid,
+		last_upd_transcode,
+		last_upd_tm) values
+		(#roleId#,
+		#roleName#,
+		#role_desc#,
+		#org_code#,
+		#flag#,
+		#memo#,
+		#create_oprid#,
+		to_char(sysdate,'yyyyMMddHH24miss'),
+		'0001',
+		#last_upd_oprid#,
+		#last_upd_transcode#,
+		#last_upd_tm#)
+	</insert>
+
+	<!-- 查询角色 -->
+	<select id="selectPageRole" parameterClass="iCriteria"
+		resultClass="roleVo">
+		select roleInfo.role_id as roleId,
+		roleInfo.role_nm as roleName,
+		roleInfo.role_desc,
+		roleInfo.org_code,
+		roleInfo.flag,
+		roleInfo.memo,
+		roleInfo.create_oprid,
+		roleInfo.create_tm,
+		roleInfo.last_upd_oprid,
+		roleInfo.last_upd_transcode,
+		roleInfo.last_upd_tm,
+		o.org_name as org_name from
+		TBL_CONSOLE_ROLE roleInfo,
+		tbl_sys_org o
+		where (roleInfo.FLAG='0' or roleInfo.FLAG='1') and
+		roleInfo.Reserved1='0001' and roleInfo.org_code=o.org_code(+)
+
+	</select>
+
+</sqlMap>

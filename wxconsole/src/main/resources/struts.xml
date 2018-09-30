@@ -1,0 +1,60 @@
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+	<!-- 设置struts2的基本配置和拦截器 -->
+	<include file="com/console/configs/struts/struts-public.cfg.xml"/>
+	<!-- 公共模块 -->
+	<include file="com/console/configs/struts/struts-console-common.xml" />
+	<!-- 操作员管理 -->
+	<include file="com/console/configs/struts/struts-console-consoleoper.xml" />
+	<!-- 平台管理 -->
+	<include file="com/console/configs/struts/struts-console-pltsign.xml" />
+	<!-- 组件管理 -->
+	<include file="com/console/configs/struts/struts-console-comp.xml" />
+	<!-- 参数管理 -->
+	<include file="com/console/configs/struts/struts-console-param.xml" />
+	<!-- 商户平台日志 -->
+	<include file="com/console/configs/struts/struts-console-merlog.xml" />
+	<!-- 商户平台日志 -->
+	<include file="com/console/configs/struts/struts-console-lottery.xml" />
+	
+	<!-- spring security失效页面的action -->
+	<package name="springsecurity.common" extends="demo-query-default">
+		<action name="sessionExpired" class="sessionExpiredAction" method="Sessionkickoff">
+			<result name="error">/sessionExpired.jsp</result>
+		</action>
+		<action name="logfail" class="sessionExpiredAction" method="logfail">
+			<result name="error">/login.jsp?login_error=1</result>
+		</action>
+	</package>
+	<!-- 登录 -->
+	<package name="busi.login" extends="demo-query-default"> 
+		<action name="loginAction" class="loginAction">
+			<result name="success">/index.jsp</result>
+			<result name="fail">/login.jsp</result>
+		</action>
+	</package>
+	
+	<!--系统参数查询 -->
+	<package name="busi.common" extends="demo-query-default"> 
+		<action name="findSecCodeList" class="seccodeAction" method="findSecCodeList" />
+		<action name="findScoreSecCodeList" class="seccodeAction" method="findScoreSecCodeList" />
+		<action name="findCodeList" class="seccodeAction" method="findCodeList" />
+		<action name="findOutTransSecCodeList" class="seccodeAction" method="findOutTransSecCodeList"/>
+		<action name="findResourceList" class="resourceAction" method="findResourceList" />
+		<action name="findAreaCodeList" class="seccodeAction" method="findAreaCodeList"/>
+		<action name="findSecCodeFlgList" class="seccodeAction" method="findSecCodeFlgList"/>
+		<action name="findRankTypeList" class="seccodeAction" method="findRankTypeInfo"/>
+		<action name="findRankTypeList1" class="seccodeAction" method="findRankTypeName"/>
+		<action name="findRankValueList" class="seccodeAction" method="findRankValueInfo"/>
+		<action name="findTimeLevel" class="seccodeAction" method="findTimeLevelInfo"/>
+		<action name="findPosSendSta" class="seccodeAction" method="findPosStatus"/>
+		<action name="findBatchStatus" class="seccodeAction" method="findBatchStatus"/>
+		<action name="findCardType" class="seccodeAction" method="findcardTypeInfo"/>
+		<action name="findAcctStatus" class="seccodeAction" method="findStatusAcct"/>
+		<action name="findResultStatus" class="seccodeAction" method="findStatusAcct"/>
+   	<action name="findAllOutMid" class="seccodeAction" method="findAllOutMid"/>
+   	<action name="findCodePage" class="seccodeAction" method="findCodePage" />
+	</package>
+</struts>

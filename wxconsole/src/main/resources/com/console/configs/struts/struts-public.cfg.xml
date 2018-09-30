@@ -1,0 +1,122 @@
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+	<!-- ============== constant field 设置struts与springde整合===================== -->
+	<constant name="struts.objectFactory" value="spring" />
+	<constant name="struts.devMode" value="false" />
+	<constant name="struts.freemarker.templatesCache" value="true" />
+	<constant name="struts.i18n.encoding" value="UTF-8" />
+	<constant name="struts.i18n.reload" value="true" />
+	<constant name="struts.configuration.xml.reload" value="true" />
+	<constant name="struts.action.extension" value="action" />
+	<constant name="struts.multipart.maxSize" value="3000000000" />
+	<!--<constant name="struts.multipart.allowedTypes" value="'.txt','.xls','.csv','.zip'" />-->
+	<!--  
+	这个应该可以解决上传空文件的报错问题
+	<constant name="struts.multipart.parser" value="pell" />
+	-->	
+
+	<constant name="struts.custom.i18n.resources" value="lang.globalMessages" />
+
+	<!-- ============== public package field ===================== -->
+	<!-- project interceptors and interceptor-stacks package -->
+	<package name="customer-interceptors" extends="struts-default">
+		<interceptors>
+			<interceptor name="jsonInterceptor" class="jsonInpt" />
+			<interceptor name="errorInterceptor" class="errorInpt" />
+			<interceptor name="pageInterceptor" class="pageInpt" />
+			<interceptor name="exceptionInterceptor" class="exceptInpt" />
+			<interceptor name="logInterceptor" class="logInpt" />
+			<interceptor name="navigateInterceptor" class="navigaeInpt" />
+			<interceptor-stack name="json-default-stack">
+				<interceptor-ref name="logInterceptor" />
+				<interceptor-ref name="exceptionInterceptor" />
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+			<interceptor-stack name="json-query-default-stack">
+				<interceptor-ref name="errorInterceptor" />
+				<interceptor-ref name="logInterceptor" />
+				<interceptor-ref name="exceptionInterceptor" />
+				<interceptor-ref name="basicStack" />
+				<interceptor-ref name="navigateInterceptor">
+				</interceptor-ref>
+			</interceptor-stack>
+			<interceptor-stack name="json-upload-default-stack">
+				<interceptor-ref name="logInterceptor" />
+				<interceptor-ref name="exceptionInterceptor" />
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+		</interceptors>
+		<global-results>
+			<result name="nodata">/page/common/nodata.jsp</result>
+			<result name="excel" type="stream">
+                <param name="contentType">application/vnd.ms-excel</param>
+                <param name="inputName">inputStream</param>
+                <param name="contentDisposition">attachment;filename="${fileName}"</param>
+                <param name="bufferSize">1024</param>   			
+    		</result>
+    		<result name="csv" type="stream">
+                <param name="contentType">text/csv</param>
+                <param name="inputName">inputStream</param>
+                <param name="contentDisposition">attachment;filename="${fileName}"</param>
+                <param name="bufferSize">1024</param>   			
+    		</result>
+    		<result name="txt" type="stream">
+                <param name="contentType">text/plain</param>
+                <param name="inputName">inputStream</param>
+                <param name="contentDisposition">attachment;filename="${fileName}"</param>
+                <param name="bufferSize">1024</param>   			
+    		</result>
+    		<result name="word" type="stream">
+                <param name="contentType">application/vnd.ms-word</param>
+                <param name="inputName">inputStream</param>
+                <param name="contentDisposition">attachment;filename="${fileName}"</param>
+                <param name="bufferSize">1024</param>   			
+    		</result>
+    		<result name="zip" type="stream">
+                <param name="contentType">application/x-zip-compressed</param>
+                <param name="inputName">inputStream</param>
+                <param name="contentDisposition">attachment;filename="${fileName}"</param>
+                <param name="bufferSize">1024</param>   			
+    		</result>
+    		<result name="xml" type="stream">
+                <param name="contentType">text/xml</param>
+                <param name="inputName">inputStream</param>
+                <param name="contentDisposition">attachment;filename="${fileName}"</param>
+                <param name="bufferSize">1024</param>   			
+    		</result>
+		</global-results>
+	</package>
+
+	<!-- exception handler package -->
+	<package name="error-handler" extends="struts-default">
+		<global-results>
+			<result name="error" type="chain">exceptionHandler</result>
+			<result name="input">/page/common/inputError.jsp</result>
+			<result name="success">/page/common/resData.jsp</result>
+			<!-- error handler page -->
+			<result name="errAjax">/page/common/appError.jsp</result>
+			<result name="errPage">/page/common/exceptionPage.jsp</result>
+		</global-results>
+		<global-exception-mappings>
+			<exception-mapping result="error" exception="java.lang.Throwable">
+			</exception-mapping>
+		</global-exception-mappings>
+		<action name="exceptionHandler" class="exceptionHandler"
+			method="exceptionForward" />
+	</package>
+
+	<package name="demo-default"
+		extends="struts-default,customer-interceptors,error-handler" abstract="true">
+		<default-interceptor-ref name="json-default-stack" />
+	</package>
+	<package name="demo-query-default"
+		extends="struts-default,customer-interceptors,error-handler" abstract="true">
+		<default-interceptor-ref name="json-query-default-stack" />
+	</package>
+	<package name="demo-upload-default"
+		extends="struts-default,customer-interceptors,error-handler" abstract="true">
+		<default-interceptor-ref name="json-upload-default-stack" />
+	</package>
+</struts>

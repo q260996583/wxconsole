@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="springsecurity">
+
+	<!-- 控制台sys_code=0001 -->
+	<select id="resourceall" resultClass="com.jiuyv.yl.console.security.entity.Resource">
+		SELECT resource_id as resourceID,
+		father_id as fatherID,
+		resource_zh as resourceZh,
+		resource_en as resourceEn,
+		resource_url as resourceUrl,
+		sys_code as sysCode,
+		show_type as showType,
+		order_num as ordernum,
+		log_flag as logflag,
+		remarks as remarks
+		from TBL_CONSOLE_RESOURCE where sys_code='0001' order by order_num
+	</select>
+
+	<select id="selectuserbypasswd" resultClass="com.jiuyv.yl.console.security.entity.SecurityUserDetail" parameterClass="java.lang.String">
+		select 
+					t.opr_id as oprId,
+					t.op_name as opName,
+					t.login_nm as loginNm,
+					t.password as password,
+					
+					t.cert_type_no as certTypeNo,
+					t.cert_no as certNo,
+					t.phone as phone,
+					t.email as email,
+					t.description as description,
+					t.misc as misc,
+					
+					t.org_code as orgCode,
+					t1.org_name as orgName,
+					t.create_oprid as createOprid,
+					t.last_upd_tm as lastUpdTm,
+					t.false_time as falseTime,
+					t.PASSWD_EXPIRE_TIME as passwdExpireTime,
+					date_format(SYSDATE(), '%Y-%m-%d %h:%i:%s') as loginTime,
+					t.RESERVED1 as reserved1,
+					t.RESERVED2 as reserved2,
+					t.GROUP_NO as groupNo,
+					gc.CODE_NAME as groupNoDesc
+		 from TBL_CONSOLE_OPINFO t
+		 left join tbl_sys_org t1 on t1.org_code = t.org_code
+		 left join (select * from tbl_sys_code where CODE_TYPE = 'SYS_USER_GROUP') gc on t.GROUP_NO = gc.CODE_NAME
+		where t.login_nm = #value#
+		  and t.status=0
+	</select>
+
+	<select id="userresouce" resultClass="com.jiuyv.yl.console.security.entity.Resource" parameterClass="java.lang.String">
+		SELECT t.resource_id as ResourceID,
+					t.father_id as fatherID,
+					t.resource_zh as resourceZh,
+					t.resource_en as resourceEn,
+					t.sys_code as sysCode,
+					t.order_num as orderNum,
+					t.log_flag as logFlag,
+					t.remarks as remarks
+		from TBL_CONSOLE_RESOURCE t,
+		TBL_CONSOLE_OPINFO u,
+		tbl_console_userrole ur,
+		tbl_console_role r,
+		tbl_console_roleres rr
+		where u.opr_id = ur.opr_id
+		and ur.role_id = r.role_id
+		and rr.role_id = r.role_id
+		and r.flag=0
+		and t.sys_code='0001'
+		and rr.resource_id = t.resource_id
+		and u.login_nm=#value# order by t.order_num
+	</select>
+
+	<select id="orgall" resultClass=" com.jiuyv.yl.console.security.entity.SecOrgVo">
+		select org_code as orgCode, father_org_code as fatherOrgCode from tbl_sys_org
+	</select>
+	
+	<update id="updateUser" parameterClass="com.jiuyv.yl.console.security.entity.SecurityUserDetail" >
+	
+		update tbl_console_opinfo u set u.false_time = #falseTime# ,u.LAST_UPD_TM = #lastUpdTm# 
+		where u.login_nm = #loginNm# 
+	
+	</update>
+	
+	<select id="loginfalseTime" resultClass="java.lang.Integer">
+	 select r.param_value
+     from CORESYS.TBL_CSYS_RISK r 
+     where r.param_name = 'T001' 
+	</select>
+	
+	<!-- <select id="selectuserbypasswd"
+		resultClass="com.jiuyv.yl.console.security.entity.SecurityUserDetail"
+		parameterClass="java.lang.String">
+		select t.opr_id as oprId,
+		t.op_name as opName,
+		t.login_nm as loginNm,
+		t.password as password,
+		t.brh_id as brhId,
+		t.status  as status,
+		'系统' as brhNm,
+       	'00' as brhType,
+       	'00'   as brhStatus,
+        t.false_time as falseTime ,
+        t.reserved as reserved 
+		from tbl_console_opinfo t where t.login_nm = #value# 
+	</select> -->
+
+</sqlMap>

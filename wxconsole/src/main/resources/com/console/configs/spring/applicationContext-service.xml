@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns="http://www.springframework.org/schema/beans" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:vld="http://www.springmodules.org/validation/bean/validator"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springmodules.org/validation/bean/validator http://www.springmodules.org/validation/bean/validator.xsd ">
+
+	<!-- ============================================================= -->
+	<!-- AOP transaction definition -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="do*" propagation="REQUIRED" rollback-for="java.lang.Exception"
+				isolation="DEFAULT" />
+			<tx:method name="*" propagation="REQUIRED" isolation="DEFAULT" />
+		</tx:attributes>
+	</tx:advice>
+	<!-- ============================================================= -->
+	<!-- aspect bean def -->
+	<aop:config>
+		<aop:pointcut id="doPointCut" expression="execution(* *..*ServiceImpl.do*(..))" />
+		<aop:pointcut id="sendPointCut" expression="execution(* *..*ServiceImpl.send*(..))" />
+		<aop:pointcut id="queryPointCut"
+			expression="execution(* *..*ServiceImpl.queryPayBrh*(..))" />
+		<aop:pointcut id="findPointCut"
+			expression="execution(* *..*ServiceImpl.findReport*(..))" />
+			<aop:pointcut id="securityloingCut"
+			expression="execution(* *..*LoginFilter.attemptAuthentication*(..))" />	
+			<aop:pointcut id="securityloingCut2"
+			expression="execution(* *..*SelfSecurityManager.loadUserByUsername*(..))" />	
+			
+			
+		<aop:advisor advice-ref="txAdvice" order="2" pointcut-ref="doPointCut" />
+		<aop:advisor advice-ref="txAdvice" order="2" pointcut-ref="sendPointCut" />
+		<aop:advisor advice-ref="txAdvice" order="2" pointcut-ref="queryPointCut" />
+		<aop:advisor advice-ref="txAdvice" order="2" pointcut-ref="findPointCut" />
+		<aop:advisor advice-ref="txAdvice" order="2" pointcut-ref="securityloingCut" />
+		<aop:advisor advice-ref="txAdvice" order="2" pointcut-ref="securityloingCut2" />
+	</aop:config>
+	
+	<!-- ============================================================= -->
+	
+	<!-- 系统参数 -->
+	<bean id="secService" class="com.jiuyv.yl.console.common.service.SecServiceImpl">
+		<property name="dao" ref="secDao"></property>
+	</bean>
+	
+	<!-- 系统操作 -->
+	<bean id="resourceService" class="com.jiuyv.yl.console.common.service.ResourceServiceImpl" scope="prototype">
+		<property name="dao" ref="resourceDao"></property>
+	</bean>
+
+	<!-- 以下业务Service实例 -->
+	<!-- 控制台操作员管理 -->
+	<bean id="consoleOperService"
+		class="com.jiuyv.yl.console.consoleoper.service.impl.ConsoleOperServiceImpl">
+		<property name="dao" ref="consoleOperDao"></property>
+	</bean>
+
+	<!-- 控制台操作员管理 -->
+	<bean id="roleMngrService"
+		class="com.jiuyv.yl.console.consoleoper.service.impl.RoleMngrServiceImpl">
+		<property name="dao" ref="roleMngrDao"></property>
+	</bean>
+
+	<!-- 公共的 -->
+	<bean id="commonService"
+		class="com.jiuyv.yl.console.common.service.impl.CommonServiceImpl">
+		<property name="dao" ref="commonDao"></property>
+	</bean>
+	
+	<!-- 资源Service -->
+	<bean id="mediaSupportService" class="com.jiuyv.yl.console.common.service.impl.MediaSupportServiceImpl">
+		<property name="cmMediaResDao" ref="cmMediaResDao" />
+	</bean>
+	
+	<!-- 彩票Service -->
+	<bean id="lotteryResultOperService" class="com.jiuyv.yl.console.lottery.service.impl.LotteryResultOperServiceImpl">
+		<property name="lotteryResultOperDao" ref="lotteryResultOperDao" />
+		<property name="lotteryOrderService" ref="lotteryOrderService" />
+		<property name="tblLotteryMerchantService" ref="tblLotteryMerchantService" />
+	</bean>
+	
+	<bean id="lotteryOrderService" class="com.jiuyv.yl.console.lottery.service.impl.LotteryOrderServiceImpl">
+		<property name="tblLotteryOrderDAO" ref="tblLotteryOrderDAO" />
+	</bean>
+	
+	<bean id="tblLotteryMerchantService" class="com.jiuyv.yl.console.lottery.service.impl.TblLotteryMerchantServiceImpl">
+		<property name="tblLotteryMerchantDAO" ref="tblLotteryMerchantDAO" />
+		<property name="tblWebchantMerchantDAO" ref="tblWebchantMerchantDAO" />
+	</bean>
+	
+	<!-- <bean id="requestToWXService" class="com.jiuyu.batchServer.bussiness.wxrobot.service.impl.RequestToWXServiceImpl">
+		<property name="webchantMerchantService" ref="webchantMerchantService" />
+	</bean> -->
+	
+	<bean id="webchantMerchantService" class="com.jiuyv.yl.console.lottery.service.impl.WebchantMerchantServiceImpl">
+		<property name="tblWebchantMerchantDAO" ref="tblWebchantMerchantDAO" />
+	</bean>
+	<bean id="happyTenLotteryAnalysiser" class="com.jiuyu.batchServer.bussiness.wxrobot.service.impl.HappyTenLotteryAnalysiser" />
+	
+	<bean id="happyThreeLotteryAnalysiser" class="com.jiuyu.batchServer.bussiness.wxrobot.service.impl.HappyThreeLotteryAnalysiser"/>
+	
+	<bean id="lotteryWelfareService" class="com.jiuyv.yl.console.lottery.service.impl.TblLotteryWelfareServiceImpl">
+		<property name="lotteryWelfareDAO" ref="lotteryWelfareDAO" />
+	</bean>
+</beans>

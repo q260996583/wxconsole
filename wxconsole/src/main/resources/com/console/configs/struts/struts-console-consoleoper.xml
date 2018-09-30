@@ -1,0 +1,80 @@
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+	<!-- 操作员日志查询 -->
+	<package name="console.operlog" extends="demo-query-default">
+		<!-- 查询界面 -->
+		<action name="goOperLog" class="consoleOperAction" method="goOperLog">
+			<result>/page/console/business/consoleoper/operLog.jsp</result>
+		</action>
+		<action name="findOperLog" class="consoleOperAction" method="findOperLog">
+		</action>
+	</package>
+	
+	<!-- 操作员管理 -->
+	<package name="console.consoleoper" extends="demo-query-default">
+		<!-- 查询界面 -->
+		<action name="consoleOperPage" class="consoleOperAction">
+			<result>/page/console/business/consoleoper/consoleoper.jsp</result>
+		</action>
+		<!-- 操作 -->
+		<action name="doResetUserPasswd" class="consoleOperAction" method="doResetUserPasswd">
+		</action>
+		<action name="doResetAccountPasswd" class="consoleOperAction" method="doResetAccountPasswd" />
+		<action name="doUpdateLoginOperInfo" class="consoleOperAction" method="doUpdateLoginOperInfo" />
+		<action name="loadLoginOperInfo" class="consoleOperAction" method="loadLoginOperInfo" />
+		
+		<action name="loadUserWithRole" class="consoleOperAction" method="loadUserWithRole">
+		</action>
+		<action name="doInsertOper" class="consoleOperAction" method="doInsertOper">
+		</action>
+		<action name="delOper" class="consoleOperAction" method="delOper">
+		</action>
+		<action name="findPageOper" class="consoleOperAction" method="findPageOper">
+		</action>
+		<action name="doUpdateOper" class="consoleOperAction" method="doUpdateOper">
+		</action>
+		<action name="findPer" class="consoleOperAction" method="findPer">
+		</action>
+		<action name="doUpdateRoles" class="consoleOperAction" method="doUpdateRoles">
+		</action>
+		<action name="findRoles" class="consoleOperAction" method="findRoles">
+		</action>
+		<action name="findHadRoles" class="consoleOperAction" method="findHadRoles">
+		</action>
+		<!--wxb  -->
+		<action name="getMerPhoneNo" class="consoleOperAction" method="getMerPhoneNo" />
+		<action name="getMerPhoneNoLog" class="consoleOperAction" method="getMerPhoneNoLog" />
+	</package>
+
+	<!-- 角色管理 -->
+	<package name="console.rolemngr" extends="demo-query-default">
+		<!-- 查询界面 -->
+		<action name="roleMngrPage" class="roleMngrAction">
+			<result>/page/console/business/consoleoper/rolemngr.jsp</result>
+		</action>
+
+		<!-- 操作 -->
+		<action name="doInsertRole" class="roleMngrAction" method="doInsertRole">
+		</action>
+		<action name="delRole" class="roleMngrAction" method="delRole">
+		</action>
+		<action name="findPageRole" class="roleMngrAction" method="findPageRole">
+		</action>
+		<action name="doUpdateRole" class="roleMngrAction" method="doUpdateRole">
+		</action>
+		<action name="findResources" class="roleMngrAction" method="findResources">
+		</action>
+		<action name="doUpdateResources" class="roleMngrAction" method="doUpdateResources">
+		</action>
+		<action name="findHadResources" class="roleMngrAction" method="findHadResources">
+		</action>
+		<action name="findResourceTreeWithChecked" class="roleMngrAction" method="findResourceTreeWithChecked">
+		</action>
+		<action name="findResourceTree" class="roleMngrAction" method="findResourceTree">
+		</action>
+
+	</package>
+
+</struts>

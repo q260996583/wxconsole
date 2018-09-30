@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:sec="http://www.springframework.org/schema/security"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.4.xsd">
+    
+	<!-- 取http配置中的authenticationManager -->
+	<sec:authentication-manager alias="authenticationManager" />
+
+    <!-- 配置业务url过滤从数据库读取-->
+    <bean id="filterSecurityInterceptor"
+        class="org.springframework.security.intercept.web.FilterSecurityInterceptor" autowire="byType">
+        <sec:custom-filter before="FILTER_SECURITY_INTERCEPTOR" />
+        <property name="objectDefinitionSource" ref="filterInvocationDefinitionSourceFactoryBean" />
+    </bean>
+    
+    <bean id="loginFilter" class="com.jiuyv.yl.console.security.filter.LoginFilter">
+    <sec:custom-filter before="AUTHENTICATION_PROCESSING_FILTER"/>    
+    <property name="authenticationFailureUrl" value="/logfail.action"/>
+    <property name="defaultTargetUrl" value="/loginAction.action"></property> 
+    <property name="alwaysUseDefaultTargetUrl" value="true"></property>   
+    <property name="authenticationManager" ref="authenticationManager"/>
+    <property name="sqlmapclient" ref="sqlMapClient" />
+   </bean>
+
+    <bean id="filterInvocationDefinitionSourceFactoryBean" class="com.jiuyv.yl.console.security.filter.FilterInvocationDefinitionSourceFactoryBean">
+        <!-- ibatis的sqlclient 和 statement id -->
+        <property name="sqlmapclient" ref="sqlMapClient" />
+        <property name="statementid" value="springsecurity.resourceall"/>
+		<!-- 严格校验，未配制的url也不允许访问，默认为false不校验 -->
+		<property name="strictUrl" value="false"/>
+		
+    </bean>
+    
+    
+    <!-- 采用自定义的用户验证service -->
+	<sec:authentication-provider user-service-ref="SelfSecurityManager">
+	<!-- 明文密码 
+	<sec:password-encoder hash="plaintext"/>  -->
+	 
+	<!-- md5加密密码  -->
+		<!-- <sec:password-encoder hash="md5" /> -->	
+	</sec:authentication-provider>
+	
+
+    <bean id="SelfSecurityManager" class="com.jiuyv.yl.console.security.service.SelfSecurityManager" >
+      <property name="sqlmapclient" ref="sqlMapClient" />
+      <property name="loaduserresouceid" value="springsecurity.userresouce" />
+      <property name="loaduserstatementid" value ="springsecurity.selectuserbypasswd" />
+      <property name="loaduserorgtype" value ="springsecurity.userorgtype" />
+      <property name="filterOrdId" value="0001"/>
+      <property name="orgtreeutil" ref="orgTreeUtil"/>
+      <property name="loginfalseTime" value="springsecurity.loginfalseTime" />
+	  <property name="updateUser" value="springsecurity.updateUser" />
+    </bean>
+   
+   <!--  session-fixation-protection="none" migrationSession  newSession
+   //默认springsecury 会保存前一个请求地址,在登录成功后继续访问 如果禁止该功能是用   servlet-api-provision="false"
+   -->
+    <sec:http auto-config='true'  session-fixation-protection="newSession"   access-denied-page="/login.jsp">
+    	<!-- 配置登录页面等url  -->
+      <sec:form-login always-use-default-target="true" authentication-failure-url="/login.jsp?login_error=1" default-target-url="/loginAction.action" login-page="/login.jsp"/>
+   
+     	<!-- 防止一个用户重复登录好几次-第二次登录会让第一次登录失效  /sessionExpired.action -->
+      <sec:concurrent-session-control max-sessions="1" expired-url="/sessionExpired.action" exception-if-maximum-exceeded="false" />
+      <!-- 登出配置 -->
+      <sec:logout invalidate-session="true" logout-success-url="/login.jsp"  logout-url="/j_spring_security_logout"/>
+      <!-- remember-me配置 -->
+      <!-- <remember-me key="ddffereve3545443daf1eer"/>    -->
+        
+    	<!-- 通用的业务无关的url过滤无需放数据库，直接放在这里-->
+      <!--  <sec:intercept-url pattern="/loginAction.action"  access="IS_AUTHENTICATED_FULLY" /> -->   
+      <sec:intercept-url pattern="/login.jsp*"  filters="none"/>
+      <sec:intercept-url pattern="/images/**" filters="none"/>
+      <sec:intercept-url pattern="/css/**" filters="none"/>
+      <sec:intercept-url pattern="/js/**" filters="none"/>
+      <sec:intercept-url pattern="/css/**" filters="none"/>
+      <sec:intercept-url pattern="/r/**" filters="none"/>
+      <sec:intercept-url pattern="/res/**" filters="none"/>
+   
+    </sec:http>
+     
+	<!-- 国际化 -->
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+    	<property name="basenames">
+    		<list>
+		    	<value>/WEB-INF/classes/lang/securityMessages_zh_CN</value>
+		    	<value>/WEB-INF/classes/lang/globalMessages</value>
+    		</list>
+    	</property>
+    </bean>
+    
+    <!-- 附件拦截器 -->
+    <bean id="mediaFilter" class="com.jiuyv.yl.console.security.filter.MediaFilter" >
+    	<property name="mediaService" ref="mediaSupportService" />
+    </bean>
+    
+    <!-- 商户进件附件拦截器 -->
+    <bean id="attachFilter" class="com.jiuyv.yl.console.security.filter.AttachFilter" >
+    	<property name="mediaService" ref="mediaSupportService" />
+    </bean>
+    
+	<!-- Soft keyboard Filter -->
+	<bean id="softkbFilter" class="com.jiuyv.common.web.softkb.SoftkbDecodeFilter" />
+	<!--wxb  -->
+	<bean id="CodeFilter" class="com.jiuyv.yl.console.security.util.CodeFilter">
+		<property name="service" ref="consoleOperService" />
+	</bean>
+	
+</beans>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+    http://www.springframework.org/schema/task
+    http://www.springframework.org/schema/task/spring-task.xsd">
+
+	<!-- 数据源配置-->
+    <import resource="dataSource.xml" />
+    
+   
+    <!-- ibatis和dao的配置-->
+    <import resource="applicationContext-dao.xml"/>
+   
+    <!-- strust2的通用配置 -->
+    <!-- <import resource="struts-public.cfg.xml" /> -->
+	<!-- strust2-->
+    <import resource="web-public.ctx.xml"/>
+	
+	<!-- struts2的action的spring配置 -->
+	 <import resource="applicationContext-action.xml"/>
+	 <!-- service的spring 配置文件 -->
+	 <import resource="applicationContext-service.xml"/>
+	 <!-- jms配置 
+	 <import resource="applicationContext-jms.xml"/>-->
+	  
+	 <!-- 所有资源的在内存里的一个镜像，用于生成菜单和log使用 -->
+	  <bean id="resourceCache" class="com.jiuyv.common.tree.TreeFacotoryBean" >
+	  	  <property name="sqlmapclient" ref="sqlMapClient"/>
+	  	  <property name="treestatementid" value="springsecurity.resourceall"/>
+	  </bean>
+	 <!-- 所有机构资源，用于生成子机构使用 -->
+	 <bean id="orgTreeUtil" class="com.jiuyv.yl.console.security.util.OrgTreeUtil" >
+	  	  <property name="sqlmapclient" ref="sqlMapClient"/>
+	  	  <property name="loadorgtreeid" value="springsecurity.orgall"/>
+	  </bean> 
+	  
+	<!-- spring 读取数据库配置文件  -->
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<!--<property name="location" value="classpath:server.properties" />-->
+		<property name="location" value="${WXMGR_ENVFILE}" />
+	</bean>
+
+   <!-- 定时任务-->
+   <task:scheduled-tasks>
+        <task:scheduled ref="happyThreeTask" method="runLotteryInfo" cron="0 0/1 8-22 * * ?" />
+        <!-- <task:scheduled ref="happyThreeTask" method="runTimeNow" cron="0 0/1 8-22 * * ?" /> -->
+        <task:scheduled ref="happyTenTask" method="runLotteryInfo" cron="0 0/1 8-22 * * ?" />
+        <!-- <task:scheduled ref="happyTenTask" method="runTimeNow" cron="0 0/1 8-23 * * ?" /> -->
+        <task:scheduled ref="everyDayHappyNotityTask" method="welfare" cron="0 22 23 * * ?" />
+   </task:scheduled-tasks>
+
+</beans>

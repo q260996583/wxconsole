@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans 	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+			http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
+			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+
+	<!-- <jee:jndi-lookup id="dataSource" jndi-name="nposp" /> -->
+	
+	<!-- <bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="${jdbc.driverClassName}"></property>
+		<property name="url" value="${dbserverurl}"></property>
+		<property name="username" value="${dbusername}"></property>
+		<property name="password" value="${dbpasswd}"></property>
+	</bean> -->
+
+	<!--tomcat jdbc pool数据源配置-->           
+    <bean id="dataSource" class="org.apache.tomcat.jdbc.pool.DataSource" destroy-method="close">    
+        <property name="poolProperties">  
+            <bean class="org.apache.tomcat.jdbc.pool.PoolProperties">    
+                <property name="driverClassName" value="${jdbc.driverClassName}"/>  
+                <property name="url" value="${dbserverurl}"/>    
+                <property name="username" value="${dbusername}"/>    
+                <property name="password" value="${dbpasswd}"/>  
+                <property name="jmxEnabled" value="true"/>  
+                <property name="defaultAutoCommit" value="false"/>
+                <property name="testWhileIdle" value="true"/> 
+                <property name="validationInterval" value="30000"/>   
+                <property name="validationQuery" value="SELECT 1 FROM dual"/>    
+                <property name="timeBetweenEvictionRunsMillis" value="30000"/>    
+                <property name="maxActive" value="${db.maxPoolSize}"/> 
+                <property name="maxIdle" value="${db.maxPoolSize}"/> 
+                <property name="initialSize" value="${db.minPoolSize}"/>    
+                <property name="maxWait" value="10000"/>    
+                <property name="minEvictableIdleTimeMillis" value="30000"/>    
+                <property name="minIdle" value="${db.minPoolSize}"/>  
+                <property name="removeAbandoned" value="true"/>    
+                <property name="removeAbandonedTimeout" value="90"/> 
+                <property name="logAbandoned" value="true"/> 
+                <property name="jdbcInterceptors" value="org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer"/>    
+            </bean>    
+        </property>    
+    </bean>
+</beans>

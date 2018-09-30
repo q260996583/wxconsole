@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMapConfig      
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"      
+    "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+
+	<!-- 使用命名空间 用于区分重名问题 -->
+	<settings useStatementNamespaces="true" />
+	<sqlMap resource="com/console/sqlmap/template.xml" />
+	<sqlMap resource="com/console/sqlmap/springsecurity.xml" />
+	<sqlMap resource="com/console/sqlmap/common/common.xml" />
+	<!-- 资源文件 -->
+	<sqlMap resource="com/console/sqlmap/common/CmMediaResSqlMap.xml" />
+	<!-- 彩票 -->
+	<sqlMap resource="com/console/sqlmap/lottery/lottery.xml" />
+	<sqlMap resource="com/console/sqlmap/lottery/tbl_lottery_order_SqlMap.xml" />
+	<sqlMap resource="com/console/sqlmap/lottery/tbl_lottery_merchant_SqlMap.xml" />
+	<sqlMap resource="com/console/sqlmap/lottery/tbl_webchant_merchant_SqlMap.xml" />
+	<sqlMap resource="com/console/sqlmap/lottery/tbl_lottery_welfare_SqlMap.xml" />
+</sqlMapConfig>

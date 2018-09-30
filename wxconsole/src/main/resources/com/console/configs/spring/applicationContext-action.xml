@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<!-- spring security失效页面的action -->
+	<bean id="sessionExpiredAction" class="com.jiuyv.common.web.action.ErrorAction"
+		scope="prototype">
+	</bean>
+
+	<!-- 公共 -->
+	<bean id="seccodeAction" class="com.jiuyv.yl.console.common.action.SecCodeAction" scope="prototype">
+		<property name="service">
+			<ref bean="secService" />
+		</property>
+	</bean>
+	<bean id="resourceAction" class="com.jiuyv.yl.console.common.action.ResourceAction" scope="prototype">
+		<property name="service">
+			<ref bean="resourceService" />
+		</property>
+	</bean>
+
+	<!-- 以下业务Action实例 -->
+	<!-- 用户登录 -->
+	<bean id="loginAction" class="com.jiuyv.yl.console.security.action.LoginAction"
+		scope="prototype">
+		<property name="resoucrecache">
+			<ref bean="resourceCache" />
+		</property>
+	</bean>
+
+	<!-- 控制台操作员管理 -->
+	<bean id="consoleOperAction" class="com.jiuyv.yl.console.consoleoper.action.ConsoleOperAction">
+		<property name="service" ref="consoleOperService"></property>
+	</bean>
+	<!--短信验证wxb
+    <bean id="phoCheCodeUtil" class="com.jiuyv.yl.console.consoleoper.action.PhoCheCodeUtil">
+		<property name="phoCheckUrl" value="${phoCheckUrl}"></property>		
+	</bean>  -->
+	
+	<!-- 角色管理 -->
+	<bean id="roleMngrAction" class="com.jiuyv.yl.console.consoleoper.action.RoleMngrAction">
+		<property name="service" ref="roleMngrService"></property>
+		<property name="resoucrecache">
+			<ref bean="resourceCache" />
+		</property>
+	</bean>
+
+	<!-- 公共的 -->
+	<bean id="commonAction" class="com.jiuyv.yl.console.common.action.CommonAction">
+		<property name="service" ref="commonService"></property>
+		<property name="mediaSupportService" ref="mediaSupportService" />
+	</bean>
+	
+	<!-- 获取广西彩票网数据TASK -->
+	<bean id="happyThreeTask" class="com.jiuyv.yl.console.lottery.batch.HappyThreeTask">
+		<property name="lotteryResultOperService" ref="lotteryResultOperService"/>
+    </bean>
+
+	<bean id="happyTenTask" class="com.jiuyv.yl.console.lottery.batch.HappyTenTask">
+		<property name="lotteryResultOperService" ref="lotteryResultOperService"/>
+    </bean>
+    
+    <bean id="chatRobotAction" class="com.jiuyu.batchServer.bussiness.wxrobot.action.ChatRobotAction" scope="prototype">
+		<!-- <property name="requestToWXService" ref="requestToWXService"/> -->
+		<property name="retImgPath" value="${return.msg.imgpath}"/>
+		<property name="tblLotteryMerchantService" ref="tblLotteryMerchantService"/>
+		<property name="lotteryOrderService" ref="lotteryOrderService"/>
+		<property name="lotteryResultOperService" ref="lotteryResultOperService"/>
+		<!-- <property name="notityGroupName" value="${wx.group.name}"/> -->
+		<property name="webchantMerchantService" ref="webchantMerchantService"/>
+		<property name="commonService" ref="commonService"/>
+		<property name="happyNotityTask" ref="happyNotityTask"/>
+    </bean>
+    
+    <bean id="robotManagerAction" class="com.jiuyu.batchServer.bussiness.wxrobot.action.RobotManagerAction"
+     scope="singleton" destroy-method="cleanUp">
+    	<property name="commonService" ref="commonService"/>
+    	<property name="tblLotteryMerchantService" ref="tblLotteryMerchantService"/>
+    	<property name="taskExecutor" ref="banktaskthreadPool"/>
+    	<property name="lotteryAnalysiserMap" ref="lotteryAnalysiserMap" />
+    	<property name="lotteryResultOperService" ref="lotteryResultOperService"/>
+    </bean>
+    
+    <!-- 获取广西彩票网数据TASK -->
+	<bean id="happyNotityTask" class="com.jiuyv.yl.console.lottery.batch.HappyNotityTask">
+		<property name="lotteryResultOperService" ref="lotteryResultOperService"/>
+		<!-- <property name="lotteryOrderService" ref="lotteryOrderService"/>
+		<property name="chatRobotAction" ref="chatRobotAction"/> -->
+    </bean>
+    
+    	<!-- 异步线程池 -->
+	<bean id="banktaskthreadPool"
+		class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+		<!-- 核心线程数 -->
+		<property name="corePoolSize" value="10" />
+		<!-- 最大线程数 -->
+		<property name="maxPoolSize" value="50" />
+		<!-- 队列最大长度 >=mainExecutor.maxSize -->
+		<property name="queueCapacity" value="100" />
+		<!-- 线程池维护线程所允许的空闲时间 -->
+		<property name="keepAliveSeconds" value="300" />
+	</bean>
+	
+	<bean id="lotteryAnalysiserMap" class="java.util.HashMap">
+		<constructor-arg>
+			<map>
+				<entry key="03" value-ref="happyThreeLotteryAnalysiser" />
+				<entry key="10" value-ref="happyTenLotteryAnalysiser" />
+			</map>
+		</constructor-arg>
+	</bean>
+	
+	<bean id="everyDayHappyNotityTask" class="com.jiuyv.yl.console.lottery.batch.EveryDayHappyNotityTask">
+		<property name="tblLotteryMerchantService" ref="tblLotteryMerchantService"/>
+		<property name="lotteryOrderService" ref="lotteryOrderService"/>
+		<property name="lotteryWelfareService" ref="lotteryWelfareService"/>
+    </bean>
+</beans>	
