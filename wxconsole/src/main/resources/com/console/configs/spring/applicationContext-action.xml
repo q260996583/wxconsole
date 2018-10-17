@@ -116,4 +116,7 @@
 		<property name="lotteryOrderService" ref="lotteryOrderService"/>
 		<property name="lotteryWelfareService" ref="lotteryWelfareService"/>
     </bean>
+    
+    <bean id="notifyRobot" class="com.jiuyv.yl.console.lottery.batch.NotifyRobot">
+    </bean>
 </beans>	

@@ -46,6 +46,51 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.util.Cookie;
 
 public class HtmlUtil {
+	
+	public static byte[] requestByPost2(String uri, String param, Set<Cookie> COOKIESET) {
+		HttpURLConnection httpURLConnection = null;
+		try {
+        	URL url = new URL(uri);
+            httpURLConnection = (HttpURLConnection) url.openConnection();
+            httpURLConnection.setRequestMethod("POST");// 提交模式
+            httpURLConnection.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
+            httpURLConnection.setRequestProperty("Connection", "Keep-Alive");
+            // conn.setConnectTimeout(10000);//连接超时 单位毫秒
+            // conn.setReadTimeout(2000);//读取超时 单位毫秒
+            // 发送POST请求必须设置如下两行
+            httpURLConnection.setDoOutput(true);
+            httpURLConnection.setDoInput(true);
+            if(null != COOKIESET) {
+            	Iterator Cookieiter = COOKIESET.iterator();
+            	while(Cookieiter.hasNext()) {
+            		httpURLConnection.addRequestProperty("Cookie", Cookieiter.next().toString());
+            	}
+            }
+            // 获取URLConnection对象对应的输出流
+            OutputStream outs = httpURLConnection.getOutputStream();
+            // 发送请求参数
+            //printWriter.write(param);//post的参数 xx=xx&yy=yy
+            //printWriter.print(param);
+            outs.write(param.getBytes("UTF-8"));
+            outs.flush();
+            // flush输出流的缓冲
+            //printWriter.flush();
+            String cookie = httpURLConnection.getHeaderField("set-cookie");
+            System.out.println("cookie:::::::::::::" + cookie);
+            int repCode  = httpURLConnection.getResponseCode();
+            System.out.println(repCode);
+            //开始获取数据
+            byte[] retB = changeInputStream(httpURLConnection.getInputStream());
+            httpURLConnection.disconnect();
+            return retB;
+        } catch (Exception e) {
+        	if(null != httpURLConnection) {
+        		httpURLConnection.disconnect();
+        	}
+            e.printStackTrace();
+        }
+        return null;
+	}
 	//public static Set<Cookie> COOKIESET = null;
 	public static byte[] requestByPost(String uri, String param, Set<Cookie> COOKIESET) {
 		HttpURLConnection httpURLConnection = null;
@@ -53,7 +98,7 @@ public class HtmlUtil {
         	URL url = new URL(uri);
             httpURLConnection = (HttpURLConnection) url.openConnection();
             httpURLConnection.setRequestMethod("POST");// 提交模式
-            httpURLConnection.setRequestProperty("Content-Type", "application/json;charset=utf-8");
+            httpURLConnection.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
             httpURLConnection.setRequestProperty("Connection", "Keep-Alive");
             // conn.setConnectTimeout(10000);//连接超时 单位毫秒
             // conn.setReadTimeout(2000);//读取超时 单位毫秒
@@ -69,7 +114,8 @@ public class HtmlUtil {
             // 获取URLConnection对象对应的输出流
             PrintWriter printWriter = new PrintWriter(httpURLConnection.getOutputStream());
             // 发送请求参数
-            printWriter.write(param);//post的参数 xx=xx&yy=yy
+            //printWriter.write(param);//post的参数 xx=xx&yy=yy
+            printWriter.print(param);
             // flush输出流的缓冲
             printWriter.flush();
             String cookie = httpURLConnection.getHeaderField("set-cookie");

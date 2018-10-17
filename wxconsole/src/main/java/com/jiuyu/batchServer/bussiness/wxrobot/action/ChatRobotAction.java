@@ -666,6 +666,8 @@ public class ChatRobotAction implements Runnable{
 				path += context;
 				return RequestToWXUtil.sendImg(PASSTICKET, UIN, SID, SKEY, 
 						getEid(), myUser.getUserName(), userName, path, wxHost, COOKIESET);
+			} else {
+				RequestToWXUtil.sendMsg(PASSTICKET, UIN, SID, SKEY, getEid(), myUser.getUserName(), userName, context, wxHost, COOKIESET);
 			}
 		}
 		return null;

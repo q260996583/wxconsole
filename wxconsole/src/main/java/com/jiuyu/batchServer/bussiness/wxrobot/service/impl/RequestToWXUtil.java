@@ -32,6 +32,7 @@ import com.jiuyu.batchServer.bussiness.wxrobot.htmlutil.HtmlUtil;
 import com.jiuyu.batchServer.bussiness.wxrobot.utils.ImageUtil;
 import com.jiuyu.batchServer.bussiness.wxrobot.utils.XmlUtil;
 import com.jiuyv.common.exception.BaseException;
+import com.jiuyv.yl.console.lottery.batch.Utf2Gbk;
 import com.jiuyv.yl.console.lottery.entity.TblWebchantMerchant;
 import com.jiuyv.yl.console.lottery.service.inter.IWebchantMerchantService;
 
@@ -336,21 +337,22 @@ public class RequestToWXUtil {
 	 * @return
 	 * @throws Exception
 	 */
-//	public static String sendMsg(String passTicket, String uin, String sid,
-//			String skey, String estr, String fromUserName, String toId, String content) throws Exception {
-//		Thread.sleep(1000);
-//		 String msg_id = String.valueOf(System.currentTimeMillis()).substring(0, 13);
-//		 String sendUri = "https://wx.qq.com/cgi-bin/mmwebwx-bin/webwxsendmsg?"
-//		 		+ "pass_ticket=" + passTicket;
-//		 toId = "\"" + toId + "\"";
-//		 String baseRequestJson = "{\"Uin\":" + uin + ",\"Sid\":\"" + sid + "\","
-//					+ "\"Skey\":\"" + skey +"\",\"DeviceID\":\"" + estr +"\"}";
-//		 String json = "{\"BaseRequest\": " + baseRequestJson + ",\"Msg\": {\"Type\": 1,\"Content\": "
-//		 		+ "\"" + content +"\",\"FromUserName\": \"" + fromUserName +"\",\"ToUserName\": " + toId + ","
-//		 		+ "\"LocalID\": \"" + msg_id + "\",\"ClientMsgId\": \"" + msg_id + "\"}}";
-//		 String sendRep = new String(HtmlUtil.requestByPost(sendUri, json), "UTF-8");
-//		 return sendRep;
-//	}
+	public static String sendMsg(String passTicket, String uin, String sid,
+			String skey, String estr, String fromUserName, String toId, String content, String wxHost, Set<Cookie> COOKIESET) throws Exception {
+		Thread.sleep(1000);
+		 String msg_id = String.valueOf(System.currentTimeMillis()).substring(0, 13);
+		 String sendUri = "https://wx2.qq.com/cgi-bin/mmwebwx-bin/webwxsendmsg?"
+		 		+ "pass_ticket=" + passTicket;
+		 toId = "\"" + toId + "\"";
+		 String baseRequestJson = "{\"Uin\":" + uin + ",\"Sid\":\"" + sid + "\","
+					+ "\"Skey\":\"" + skey +"\",\"DeviceID\":\"" + estr +"\"}";
+		 String json = "{\"BaseRequest\": " + baseRequestJson + ",\"Msg\": {\"Type\": 1,\"Content\": "
+		 		+ "\"" + content + "\",\"FromUserName\": \"" + fromUserName +"\",\"ToUserName\": " + toId + ","
+		 		+ "\"LocalID\": \"" + msg_id + "\",\"ClientMsgId\": \"" + msg_id + "\"}}";
+		 //json = new String(json.getBytes("UTF-8"), "UTF-8");
+		 String sendRep = new String(HtmlUtil.requestByPost2(sendUri, json, COOKIESET), "UTF-8");
+		 return sendRep;
+	}
 
 	public static String sendTextImage(String passTicket, String uin, String sid,
 			String skey, String estr, String fromUserName, String toId, String content,
